@@ -415,6 +415,54 @@ int count(List *list, int search_for)
     return 0;
 }
 
+//--- SCREEN
+
+int menu()
+{
+    printf("\t.--------------------------------------.\n");
+    printf("\t|                                      |\n");
+    printf("\t|           AGENDA DO THIERRY          |\n");
+    printf("\t|                                      |\n");
+    printf("\t'--------------------------------------'\n");
+    printf("\n"); // ESPAÇO
+    printf("\t.--------------------------------------.\n");
+    printf("\t| 1. INSERIR COMPROMISSO               |\n");
+    printf("\t| 2. REMOVER COMPROMISSO               |\n");
+    printf("\t| 3. MOSTRAR ELEMENTOS COMPROMISSOS    |\n");
+    printf("\t| 4. ALTERAR COMPROMISSO               |\n");
+    printf("\t|                                      |\n");
+    printf("\t| 5. GERAR ARQUIVO BACKUP NO DISCO     |\n");
+    printf("\t| 6. LER ARQUIVO BACKUP EM DISCO       |\n");
+    printf("\t|                                      |\n");
+    printf("\t| 0. SAIR DO PROGAMA                   |\n");
+    printf("\t'--------------------------------------'\n");
+    printf("\n"); // ESPAÇO
+
+    int tecla = getch();
+    return tecla;
+}
+
+int menuRemove()
+{
+    printf("\t.--------------------------------------.\n");
+    printf("\t|                                      |\n");
+    printf("\t|           AGENDA DO THIERRY          |\n");
+    printf("\t|                                      |\n");
+    printf("\t'--------------------------------------'\n");
+    printf("\n"); // ESPAÇO
+    printf("\t.--------------------------------------.\n");
+    printf("\t|                                      |\n");
+    printf("\t| 1. REMOVER COMPROMISSO PELA DATA     |\n");
+    printf("\t| 2. REMOVER COMPROMISSO POR PALAVRA   |\n");
+    printf("\t|                                      |\n");
+    printf("\t| 0. SAIR DO PROGAMA                   |\n");
+    printf("\t'--------------------------------------'\n");
+    printf("\n"); // ESPAÇO
+
+    int tecla = getch();
+    return tecla;
+}
+
 main()
 {
     List *lista = createList();
@@ -425,67 +473,63 @@ main()
     mytime = time(NULL);
     struct tm tm = *localtime(&mytime);
 
-    int aux, a=1;
+    bool control = true;
 
     system("cls");
-    printf("  -------------------------------\n");
-    printf(" | 1. Inserir elmento            |\n");
-    printf(" | 2. Remover elemento           |\n");
-    printf(" | 3. Mostrar produtos vencidos  |\n");
-    printf(" | 4. Gerar arquino binario      |\n");
-    printf(" | 5. Sair do programa           |\n");
-    printf("  -------------------------------\n");
 
-    printf("\n");
-    
-    while(a!=0){
-    
-    scanf("%d",&aux);
-    switch (aux){
-    case 1:
-        //inserir compromisso
-        break;
-    
-    case 2:
-        //remover compromisso usando data
-        break;
-    
-    case 3:
-        //remover compromisso especifico
-        break;
-    
-    case 4:
-        //consulta de compromissos
-        break;
+    do
+    {
+        // ESTRUTURA DE REPETIÇÃO
+        switch (menu())
+        {
+        case '1':
+            // INSERIR COMPROMISSO
+            // A CADA INSERÇÃO VAMOS DAR "SORT" ORDENADO PELA DATA
+            break;
 
-    case 5:
-        //procurar compromissos com a palavra
-        break;
-    
-    case 6:
-        //alterar compromisso com uma palavra especifica
-        break;
-    
-    case 7:
-        //altera compromisso de uma data especifica
-        break;
+        case '2':
+            // REMOVER COMPROMISSO
+            switch (menuRemove())
+            {
+            case '1':
+                // REMOÇÃO POR DATA
+                break;
 
-    case 8:
-        //salva no disco os compromissos
-        break;
+            case '2':
+                // REMOÇÃO POR PALAVRA
+                break;
 
-    case 9:
-        //le compromissos no disco
-        break;
+            case '0':
+                // SAIR DO PROGRAMA
+                break;
+            }
 
-    case 10:
-        
-        printf("\nVoce finalizou o programa.\n");
-        a=0;
-        
-        break;
-    }
-}
+        case '3':
+            // MOSTRAR AGENDA
+            break;
+
+        case '4':
+            // ALTERAR COMPROMISSO
+            break;
+
+        case '5':
+            // GRAVAR ARQUIVO
+            break;
+
+        case '6':
+            // LER ARQUIVO
+            break;
+
+        case '0':
+            // SAIR DO PROGRAMA
+            printf("\nVOCE FINALIZOU O PROGRAMA.\n");
+            control = false;
+            break;
+
+        default:
+            break;
+        }
+    } while (control);
 
     system("pause");
 }
