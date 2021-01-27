@@ -115,8 +115,8 @@ void printList(List *list)
     while (pointer != NULL)
     {
         printf("[COMPROMISSO]: %s\n", pointer->data.description);
-        printf("[DATA]: %2d/%2d/%4d\n", pointer->data.dia, pointer->data.mes, pointer->data.ano);
-        printf("[HOR%cRIO]: %d:%d\n", 181, pointer->data.hora, pointer->data.minutos);
+        printf("[DATA]: %2d/%2d/%4d\n", pointer->data.day, pointer->data.month, pointer->data.year);
+        printf("[HOR%cRIO]: %d:%d\n", 181, pointer->data.hours, pointer->data.minutes);
         printf("\n");
         pointer = pointer->next;
     }
@@ -259,7 +259,7 @@ bool search(int info, List *list)
     {
         return false;
     }
-    if (pointer->data.id == info)
+    if (pointer->data.day == info)
     {
         return true;
     }
@@ -277,7 +277,7 @@ void insertionSort(List *list)
         Node *menor = i;
         for (j = i->next; j != NULL; j = j->next)
         {
-            if (j->data.id < menor->data.id)
+            if (j->data.day < menor->data.day)
             {
                 menor = j;
             }
@@ -296,7 +296,7 @@ int count(List *list, int search_for)
         int count = 0;
         while (current != NULL)
         {
-            if (current->data.id == search_for)
+            if (current->data.day == search_for)
                 count++;
             current = current->next;
         }
@@ -369,6 +369,7 @@ main()
 
     do
     {
+        system("cls");
         // ESTRUTURA DE REPETIÇÃO
         switch (menu())
         {
@@ -392,6 +393,12 @@ main()
             scanf("%d", &data.hours);
             printf("\n[´MINUTOS]> ");
             scanf("%d", &data.minutes);
+
+            push_front(lista, data);
+            // AQUI VAI O SORT()
+
+            printf("\n\nPRESSIONE QUALQUER TECLA PARA SAIR");
+            getch();
             break;
 
         case '2':
@@ -415,21 +422,74 @@ main()
         case '3':
             system("cls");
             // MOSTRAR COMPROMISSOS PELA DATA
+            
+            /* 
+                A função verifica a data informada pelo usuário é a presente nos itens da lista
+                e printa caso verdadeiro.
+                >> "searchDate();" << Função "void"
+            */
+
+            printf("\n[QUAL DATA DESEJA CONFERIR ?]");
+            printf("\n[DIA]: ");
+            scanf("%d", &data.day);
+            setbuf(stdin, NULL);
+            printf("\n[M%cS]: ", 210);
+            scanf("%d", &data.month);
+            setbuf(stdin, NULL);
+            printf("\n[ANO]: ");
+            scanf("%d", &data.year);
+            setbuf(stdin, NULL);
+
+            printf("\n\nPRESSIONE QUALQUER TECLA PARA SAIR");
+            getch();
             break;
 
         case '4':
             system("cls");
             // ALTERAR COMPROMISSO
+
+            /* 
+                Usuário informa a data do compromisso e seleciona um ID correspondente. 
+                >> "ChangeDate();" << Função "void"
+            */
+
+            printf("\n[DE QUAL DATA É O COMPORMISSO QUE DESEJA ALTERAR ?]");
+            printf("\n[DIA]: ");
+            scanf("%d", &data.day);
+            setbuf(stdin, NULL);
+            printf("\n[M%cS]: ", 210);
+            scanf("%d", &data.month);
+            setbuf(stdin, NULL);
+            printf("\n[ANO]: ");
+            scanf("%d", &data.year);
+            setbuf(stdin, NULL);
+
+            // >> "ChangeDate();"
+
+            printf("\n\nPRESSIONE QUALQUER TECLA PARA SAIR");
+            getch();
             break;
 
         case '5':
             system("cls");
             // GRAVAR ARQUIVO
+
+            /* 
+                Percorre toda a lista e insere em um arquivo; 
+                >> "filePrint();" << Função "void"
+            */
+
             break;
 
         case '6':
             system("cls");
             // LER ARQUIVO
+
+            /* 
+                Percorre todo o arquivo e insere em uma lista; 
+                >> "fileList();" << Função retorna uma "List"
+            */
+
             break;
 
         case '0':
