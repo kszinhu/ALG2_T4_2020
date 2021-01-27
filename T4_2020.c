@@ -52,16 +52,6 @@ void erase(List *list, int index); // Apaga em determinado Index
 
 void insert(List *list, DataNode data, int index); // Inserir entre a lista
 
-void xchgNodes(List *list, Node *nodeA, Node *nodeB); // Trocar dois nós
-
-Node *min(List *list, int index); // Acha nó mínimo
-
-Node *max(List *list, int index); // Acha o nó máximo
-
-void incSort(List *list);
-
-void decSort(List *list);
-
 bool search(int info, List *list);
 
 int count(List *list, int search_for); // Conta quantidade de ocorrencias de um elemento na lista
@@ -249,109 +239,6 @@ void insert(List *list, DataNode data, int index)
             newnode->next = current;
             list->size++;
         }
-    }
-}
-
-void xchgNodes(List *list, Node *nodeA, Node *nodeB)
-{
-    if (nodeA == nodeB)
-    {
-        return;
-    }
-
-    int indexA = indexOf(list, nodeA);
-    int indexB = indexOf(list, nodeB);
-
-    if (indexA == -1 || indexB == -1)
-    {
-        return;
-    }
-
-    if (indexA > indexB)
-    {
-        nodeA = nodeB;
-        nodeB = atPos(list, indexA);
-
-        indexA = indexB;
-        indexB = indexOf(list, nodeB);
-    }
-    Node *pb = atPos(list, indexB - 1);
-
-    if (nodeA == list->head)
-    {
-        list->head = nodeB;
-    }
-    else
-    {
-        Node *pa = atPos(list, indexA - 1);
-        pa->next = nodeB;
-    }
-
-    pb->next = nodeA;
-
-    Node *pointer = nodeA->next;
-
-    nodeA->next = nodeB->next;
-    nodeB->next = pointer;
-}
-
-Node *min(List *list, int index)
-{
-    Node *pointer = atPos(list, index);
-
-    if (pointer != NULL)
-    {
-        Node *minNode = pointer;
-
-        while (pointer != NULL)
-        {
-            if (pointer->data.id < minNode->data.id)
-            {
-                minNode = pointer;
-            }
-            pointer = pointer->next;
-        }
-        return minNode;
-    }
-}
-
-Node *max(List *list, int index)
-{
-    Node *pointer = atPos(list, index);
-
-    if (pointer != NULL)
-    {
-        Node *maxNode = pointer;
-
-        while (pointer != NULL)
-        {
-            if (pointer->data.id > maxNode->data.id)
-            {
-                maxNode = pointer;
-            }
-            pointer = pointer->next;
-        }
-        return maxNode;
-    }
-}
-
-void incSort(List *list)
-{
-    int i;
-
-    for (i = 0; i < list->size - 1; i++)
-    {
-        xchgNodes(list, atPos(list, i), min(list, i));
-    }
-}
-
-void decSort(List *list)
-{
-    int i;
-
-    for (i = 0; i < list->size - 1; i++)
-    {
-        xchgNodes(list, atPos(list, i), max(list, i));
     }
 }
 
