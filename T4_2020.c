@@ -13,7 +13,8 @@ TRABALHO DE ALGORITMO - AGENDA DO THIERRY [\] AlgII
 
 typedef struct dataNode
 {
-    int id;
+    int dia, mes, ano, hora, minutos;
+    char description[50];
 } DataNode;
 
 typedef struct node
@@ -25,6 +26,7 @@ typedef struct node
 typedef struct list
 {
     Node *head;
+    // NOSSO DESCRITOR
     int size;
 } List;
 
@@ -114,7 +116,7 @@ void printList(List *list)
 {
     if (isEmpty(list))
     {
-        printf("Lista Vazia\n");
+        printf("SEM COMPROMISSO :)\n");
         return;
     }
 
@@ -122,11 +124,12 @@ void printList(List *list)
 
     while (pointer != NULL)
     {
-        printf("%d", pointer->data.id);
+        printf("[COMPROMISSO]: %s\n", pointer->data.description);
+        printf("[DATA]: %2d/%2d/%4d\n", pointer->data.dia, pointer->data.mes, pointer->data.ano);
+        printf("[HOR%cRIO]: %d:%d\n", 181, pointer->data.hora, pointer->data.minutos);
+        printf("\n");
         pointer = pointer->next;
-        printf(" ");
     }
-    printf("\n");
 }
 
 void pop_front(List *list)
@@ -483,6 +486,7 @@ main()
         switch (menu())
         {
         case '1':
+            system("cls");
             // INSERIR COMPROMISSO
             // A CADA INSERÇÃO VAMOS DAR "SORT" ORDENADO PELA DATA
             break;
@@ -491,6 +495,7 @@ main()
             // REMOVER COMPROMISSO
             switch (menuRemove())
             {
+                system("cls");
             case '1':
                 // REMOÇÃO POR DATA
                 break;
@@ -500,29 +505,38 @@ main()
                 break;
 
             case '0':
-                // SAIR DO PROGRAMA
+                // SAIR DO "menuRemove()"
                 break;
             }
 
         case '3':
+            system("cls");
             // MOSTRAR AGENDA
             break;
 
         case '4':
+            system("cls");
             // ALTERAR COMPROMISSO
             break;
 
         case '5':
+            system("cls");
             // GRAVAR ARQUIVO
             break;
 
         case '6':
+            system("cls");
             // LER ARQUIVO
             break;
 
         case '0':
             // SAIR DO PROGRAMA
             printf("\nVOCE FINALIZOU O PROGRAMA.\n");
+            
+            // CRÉDITOS
+            printf("[REALIZADOS PELOS ALUNOS]:\n\n");
+            printf("\tCASSIANO HENRIQUE APARECIDO RODRIGUES\n");
+            printf("\tJO%cO PEDRO VIEIRA RODRIGUES\n", 199);
             control = false;
             break;
 
