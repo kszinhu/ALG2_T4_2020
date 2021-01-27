@@ -425,5 +425,67 @@ main()
     mytime = time(NULL);
     struct tm tm = *localtime(&mytime);
 
+    int aux, a=1;
+
+    system("cls");
+    printf("  -------------------------------\n");
+    printf(" | 1. Inserir elmento            |\n");
+    printf(" | 2. Remover elemento           |\n");
+    printf(" | 3. Mostrar produtos vencidos  |\n");
+    printf(" | 4. Gerar arquino binario      |\n");
+    printf(" | 5. Sair do programa           |\n");
+    printf("  -------------------------------\n");
+
+    printf("\n");
+    
+    while(a!=0){
+    
+    scanf("%d",&aux);
+    switch (aux){
+    case 1:
+        //inserir compromisso
+        break;
+    
+    case 2:
+        //remover compromisso usando data
+        break;
+    
+    case 3:
+        //remover compromisso especifico
+        break;
+    
+    case 4:
+        //consulta de compromissos
+        break;
+
+    case 5:
+        //procurar compromissos com a palavra
+        break;
+    
+    case 6:
+        //alterar compromisso com uma palavra especifica
+        break;
+    
+    case 7:
+        //altera compromisso de uma data especifica
+        break;
+
+    case 8:
+        //salva no disco os compromissos
+        break;
+
+    case 9:
+        //le compromissos no disco
+        break;
+
+    case 10:
+        
+        printf("\nVoce finalizou o programa.\n");
+        a=0;
+        
+        break;
+    }
+}
+
     system("pause");
 }
