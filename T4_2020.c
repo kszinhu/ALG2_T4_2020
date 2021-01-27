@@ -13,8 +13,8 @@ TRABALHO DE ALGORITMO - AGENDA DO THIERRY [\] AlgII
 
 typedef struct dataNode
 {
-    int dia, mes, ano, hora, minutos;
-    char description[50];
+    int day, month, year, hours, minutes;
+    char description[81];
 } DataNode;
 
 typedef struct node
@@ -376,6 +376,22 @@ main()
             system("cls");
             // INSERIR COMPROMISSO
             // A CADA INSERÇÃO VAMOS DAR "SORT" ORDENADO PELA DATA
+
+            printf("\n[COMPROMISSO]: ");
+            scanf("%s", &data.description);
+
+            printf("\n[DATA DE REALIZAÇÃO DE:] \"%s\"", data.description);
+            printf("\n[DIA]: ");
+            scanf("%d", &data.day);
+            printf("\n[M%cS]: ", 210);
+            scanf("%d", &data.month);
+            printf("\n[ANO]: ");
+            scanf("%d", &data.year);
+            printf("\n[HOR%cRIO DO COMPROMISSO NO DIA %2d/%2d/%4d]", 181, data.day, data.month, data.year);
+            printf("\n[HORA]> ");
+            scanf("%d", &data.hours);
+            printf("\n[´MINUTOS]> ");
+            scanf("%d", &data.minutes);
             break;
 
         case '2':
@@ -398,7 +414,7 @@ main()
 
         case '3':
             system("cls");
-            // MOSTRAR AGENDA
+            // MOSTRAR COMPROMISSOS PELA DATA
             break;
 
         case '4':
@@ -419,7 +435,7 @@ main()
         case '0':
             // SAIR DO PROGRAMA
             printf("\nVOCE FINALIZOU O PROGRAMA.\n");
-            
+
             // CRÉDITOS
             printf("[REALIZADOS PELOS ALUNOS]:\n\n");
             printf("\tCASSIANO HENRIQUE APARECIDO RODRIGUES\n");
