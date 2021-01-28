@@ -122,9 +122,13 @@ void printList(List *list)
     }
 }
 
-void printListDate(List *list, DataNode data)
+void pListDate(List *list, DataNode data)
 {
-    
+}
+
+void pListDesc(List *list, DataNode data)
+{
+
 }
 
 void pop_front(List *list)
@@ -263,11 +267,11 @@ Node *search(DataNode info, List *list)
     if (pointer == NULL)
     {
         // RETORNA PONTEIRO NULO, NECESSÁRIO VERIFICAÇÃO
-        return *pointer;
+        return pointer;
     }
     if ((pointer->data.day == info.day) && (pointer->data.month == info.month) && (pointer->data.year == info.year))
     {
-        return *pointer;
+        return pointer;
     }
     list->head = pointer->next;
     return search(info, list);
@@ -349,6 +353,7 @@ void filePrint(List *list, char *fileName)
         fprintf(arquivo, "description: %s\n", pointer->data.description);
         fprintf(arquivo, "date: %d/%d/%d\n", pointer->data.day, pointer->data.month, pointer->data.year);
         fprintf(arquivo, "schedule: %d:%d\n", pointer->data.hours, pointer->data.minutes);
+        fprintf(arquivo, "id: %d\n", pointer->data.id);
         fprintf(arquivo, "\n"); // PULAR LINHA A CADA COMPROMISSO
         pointer = pointer->next;
     }
@@ -386,15 +391,12 @@ List fileList(char *fileName)
         fscanf(arquivo, "description: %s", tempdata.description);
         while (fgetc(arquivo) != '\n')
             ;
-        printf("%s", tempdata.description); // TESTE
         fscanf(arquivo, "date: %d/%d/%d", &tempdata.day, &tempdata.month, &tempdata.year);
         while (fgetc(arquivo) != '\n')
             ;
-        printf("%d/%d/%d", tempdata.day, tempdata.month, tempdata.year); // TESTE
         fscanf(arquivo, "schedule: %d:%d", &tempdata.hours, &tempdata.minutes);
         while (fgetc(arquivo) != '\n')
             ;
-        printf("%d:%d", tempdata.hours, tempdata.minutes); // TESTE
         // CONVERTENDO EM LISTA
         push_front(list, tempdata);
     }
@@ -586,6 +588,9 @@ main()
                 break;
             }
 
+            data.id = lista->size + 1;
+            // ID SERÁ DISTINTO PARA CADA COMPROMISSO, NÃO SERÁ UM ITEM A SER ORDENADO
+
             push_front(lista, data);
             // AQUI VAI O SORT()
 
@@ -625,6 +630,9 @@ main()
                 // >>printListDate(lista, data);
                 // FUNÇÃO RETORNA O PONTEIRO QUE APONTA PARA A INFORMAÇÃO
 
+                /* 
+                printListDate(lista, data);
+
                 if (pointer == NULL)
                 {
                     printf("\n[N%cO ENCONTRADO]\n");
@@ -634,12 +642,48 @@ main()
                 }
                 index = indexOf(lista, pointer);
 
+                */
                 printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
                 getch();
                 break;
 
             case '2':
                 // REMOÇÃO POR PALAVRA
+
+                int index;
+
+                /* 
+                    USUÁRIO INFORMA PALAVRA QUE DESEJA PROCURAR, 
+                    CASO ACHE A PALAVRA, RETORNA O PONTEIRO
+                    CASO CONTRÁRIO RETORNA NULL (NECESSITA VERIFICAÇÃO)
+                    >> pListDesc(lista,data);
+                    PRINTAMOS OS ELEMENTOS DA LISTA QUE CONTÉM A PALA-
+                    VRA E O USUÁRIO INFORMA O ID DO COMPROMISSO QUE DE-
+                    SEJA EXCLUIR
+                */
+
+                printf("[REMOVER COMPROMISSO POR PALAVRA]\n");
+                printf("\n[QUAL PALAVRA DESEJA PROCURAR ?]\n");
+                printf("\n[PALAVRA]: ");
+                scanf("%s", &data.description);
+                setbuf(stdin, NULL);
+
+                // >>pListDesc(lista, data);
+                // FUNÇÃO RETORNA O PONTEIRO QUE APONTA PARA A INFORMAÇÃO
+
+                /*
+                if (pointer == NULL)
+                {
+                    printf("\n[N%cO ENCONTRADO]\n");
+                    printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
+                    getch();
+                    break;
+                }
+                index = indexOf(lista, pointer);
+                */
+                printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
+                getch();
+
                 break;
 
             case '0':
