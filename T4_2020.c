@@ -305,18 +305,57 @@ int count(List *list, int search_for)
     return 0;
 }
 
-void filePrint(List *list)
+void filePrint(List *list, char *fileName)
 {
+    FILE *arquivo;
+    DataNode tempdata;
+    List *list;
+
+    arquivo = fopen(fileName, "w");
+    // ABRE O ARQUIVO PARA ESCRITA
+
+    /*  COMO DEVERÁ SER O ARQUIVO
+        -------------------------
+	        AGENDA DO THIERRY    
+        -------------------------
+        description: Médico
+        date: 14/3/2002
+        schedule: 00:00
+    */
+
+    // IMPRESSÃO DO HEADER
+
+    fprintf(arquivo, "-------------------------\n");
+    fprintf(arquivo, "    AGENDA DO THIERRY    \n");
+    fprintf(arquivo, "-------------------------\n");
+    fprintf(arquivo, "   COMPROMISSOS SALVOS   \n");
+
+    // IMPRESSÃO DA LISTA
+    if (isEmpty(list))
+    {
+        printf("SEM COMPROMISSO :)\n");
+        return;
+    }
+
+    Node *pointer = atPos(list, 0);
+    while (pointer != NULL)
+    {
+        fprintf(arquivo, "description: %s\n", pointer->data.description);
+        fprintf(arquivo, "date: %d/%d/%d\n", pointer->data.day, pointer->data.month, pointer->data.year);
+        fprintf(arquivo, "schedule: %d:%d\n", pointer->data.hours, pointer->data.minutes);
+        Fprintf(arquivo, "\n"); // PULAR LINHA A CADA COMPROMISSO
+        pointer = pointer->next;
+    }
 }
 
-List fileList(char *nameArq)
+List fileList(char *fileName)
 {
     FILE *arquivo;
     DataNode tempdata;
     List *list;
     int i;
 
-    arquivo = fopen(nameArq, "r");
+    arquivo = fopen(fileName, "r");
     // ABRE O ARQUIVO PARA LEITURA
 
     /*  COMO ESTARÁ NO ARQUIVO
@@ -328,20 +367,24 @@ List fileList(char *nameArq)
 
     for (i = 0; i < 4; i++) // PULAR AS 4 LINHAS DE HEADER
     {
-        while (fgetc(arquivo) != '\n');
+        while (fgetc(arquivo) != '\n')
+            ;
     }
 
     while (!feof(arquivo))
     {
         // LEITURA DE LINHA
         fscanf(arquivo, "description: %s", tempdata.description);
-        while (fgetc(arquivo) != '\n');
+        while (fgetc(arquivo) != '\n')
+            ;
         printf("%s", tempdata.description); // TESTE
         fscanf(arquivo, "date: %d/%d/%d", &tempdata.day, &tempdata.month, &tempdata.year);
-        while (fgetc(arquivo) != '\n');
+        while (fgetc(arquivo) != '\n')
+            ;
         printf("%d/%d/%d", tempdata.day, tempdata.month, tempdata.year); // TESTE
         fscanf(arquivo, "schedule: %d:%d", &tempdata.hours, &tempdata.minutes);
-        while (fgetc(arquivo) != '\n');
+        while (fgetc(arquivo) != '\n')
+            ;
         printf("%d:%d", tempdata.hours, tempdata.minutes); // TESTE
         // CONVERTENDO EM LISTA
         push_front(list, tempdata);
@@ -417,15 +460,17 @@ main()
 
     do
     {
+        setbuf(stdin, NULL);
         system("cls");
         // ESTRUTURA DE REPETIÇÃO
         switch (menu())
         {
         case '1':
+            setbuf(stdin, NULL);
             system("cls");
             // INSERIR COMPROMISSO
             // A CADA INSERÇÃO VAMOS DAR "SORT" ORDENADO PELA DATA
-
+            printf("[ADI%c%cO DE COMPROMISSOS]\n", 128, 199);
             printf("\n[COMPROMISSO]: ");
             scanf("%s", &data.description);
 
@@ -450,6 +495,7 @@ main()
             break;
 
         case '2':
+            setbuf(stdin, NULL);
             // REMOVER COMPROMISSO
             switch (menuRemove())
             {
@@ -468,6 +514,7 @@ main()
             }
 
         case '3':
+            setbuf(stdin, NULL);
             system("cls");
             // MOSTRAR COMPROMISSOS PELA DATA
 
@@ -476,7 +523,7 @@ main()
                 e printa caso verdadeiro.
                 >> "searchDate();" << Função "void"
             */
-
+            printf("[MOSTRAR COMPROMISSOS]\n");
             printf("\n[QUAL DATA DESEJA CONFERIR ?]");
             printf("\n[DIA]: ");
             scanf("%d", &data.day);
@@ -493,6 +540,7 @@ main()
             break;
 
         case '4':
+            setbuf(stdin, NULL);
             system("cls");
             // ALTERAR COMPROMISSO
 
@@ -500,7 +548,7 @@ main()
                 Usuário informa a data do compromisso e seleciona um ID correspondente. 
                 >> "ChangeDate();" << Função "void"
             */
-
+            printf("[ALTERAR COMPROMISSO]\n");
             printf("\n[DE QUAL DATA É O COMPORMISSO QUE DESEJA ALTERAR ?]");
             printf("\n[DIA]: ");
             scanf("%d", &data.day);
@@ -519,6 +567,7 @@ main()
             break;
 
         case '5':
+            setbuf(stdin, NULL);
             system("cls");
             // GRAVAR ARQUIVO
 
@@ -526,29 +575,42 @@ main()
                 Percorre toda a lista e insere em um arquivo; 
                 >> "filePrint();" << Função "void"
             */
+            char fileName[20];
 
+            printf("[GRAVAR ARQUIVO BACKUP]\n");
+            printf("\n[QUAL NOME DO ARQUIVO QUE DESEJA CRIAR ?]");
+            printf("\n[NOME DO ARQUIVO]: ");
+            scanf("%s", &fileName);
+            strcat(fileName, ".txt");
+
+            filePrint(lista, fileName);
             break;
 
         case '6':
+            setbuf(stdin, NULL);
             system("cls");
             // LER ARQUIVO
-            char namearc[20];
-
-            printf("\n[QUAL ARQUIVO DESEJA LER ?]");
-            printf("\n[NOME DO ARQUIVO]: ");
-            scanf("%s", &namearc);
-            strcat(namearc, ".txt");
 
             /* 
-                Percorre todo o arquivo e insere em uma lista; 
+                Percorre todo o arquivo, capturando as informações
+                e insere em uma Lista; 
                 >> "fileList();" << Função retorna uma "List"
+                Após returna uma "List" será atribuída a Lista vigente no código
             */
+            char fileName[20];
 
-            *lista = fileList(namearc);
+            printf("[LER ARQUIVO BACKUP]\n");
+            printf("\n[QUAL ARQUIVO DESEJA LER ?]");
+            printf("\n[NOME DO ARQUIVO]: ");
+            scanf("%s", &fileName);
+            strcat(fileName, ".txt");
 
+            *lista = fileList(fileName);
             break;
 
         case '0':
+            setbuf(stdin, NULL);
+            system("cls");
             // SAIR DO PROGRAMA
             printf("\nVOCE FINALIZOU O PROGRAMA.\n");
 
@@ -556,6 +618,9 @@ main()
             printf("[REALIZADOS PELOS ALUNOS]:\n\n");
             printf("\tCASSIANO HENRIQUE APARECIDO RODRIGUES\n");
             printf("\tJO%cO PEDRO VIEIRA RODRIGUES\n", 199);
+
+            printf("\n\nPRESSIONE QUALQUER TECLA PARA SAIR");
+            getch();
             control = false;
             break;
 
