@@ -305,6 +305,54 @@ int count(List *list, int search_for)
     return 0;
 }
 
+void filePrint(List *list)
+{
+}
+
+List fileList(char *nameArq)
+{
+    FILE *arquivo;
+    DataNode tempdata;
+    List *list;
+    int i;
+
+    arquivo = fopen(nameArq, "r");
+    // ABRE O ARQUIVO PARA LEITURA
+
+    /*  COMO ESTARÁ NO ARQUIVO
+        ----
+        description: Médico
+        date: 14/3/2002
+        schedule: 00:00
+    */
+
+    for (i = 0; i < 4; i++) // PULAR AS 4 LINHAS DE HEADER
+    {
+        while (fgetc(arquivo) != '\n');
+    }
+
+    while (!feof(arquivo))
+    {
+        // LEITURA DE LINHA
+        fscanf(arquivo, "description: %s", tempdata.description);
+        while (fgetc(arquivo) != '\n');
+        printf("%s", tempdata.description); // TESTE
+        fscanf(arquivo, "date: %d/%d/%d", &tempdata.day, &tempdata.month, &tempdata.year);
+        while (fgetc(arquivo) != '\n');
+        printf("%d/%d/%d", tempdata.day, tempdata.month, tempdata.year); // TESTE
+        fscanf(arquivo, "schedule: %d:%d", &tempdata.hours, &tempdata.minutes);
+        while (fgetc(arquivo) != '\n');
+        printf("%d:%d", tempdata.hours, tempdata.minutes); // TESTE
+        // CONVERTENDO EM LISTA
+        push_front(list, tempdata);
+    }
+    // COMO JÁ ESTÁ EM SORT A LISTA NÃO NECESSITA SER ORDENADA NOVAMENTE
+    // ACABAMOS DE LER O ARQUIVO, PORTANTO FECHAMOS O ARQUIVO
+    fclose(arquivo);
+
+    return *list;
+}
+
 //--- SCREEN
 
 int menu()
@@ -422,7 +470,7 @@ main()
         case '3':
             system("cls");
             // MOSTRAR COMPROMISSOS PELA DATA
-            
+
             /* 
                 A função verifica a data informada pelo usuário é a presente nos itens da lista
                 e printa caso verdadeiro.
@@ -456,7 +504,7 @@ main()
             printf("\n[DE QUAL DATA É O COMPORMISSO QUE DESEJA ALTERAR ?]");
             printf("\n[DIA]: ");
             scanf("%d", &data.day);
-            setbuf(stdin, NULL);
+            setbuf(stdin, NULL); // LIMPA BUFFER DE ENTRADA
             printf("\n[M%cS]: ", 210);
             scanf("%d", &data.month);
             setbuf(stdin, NULL);
@@ -484,11 +532,19 @@ main()
         case '6':
             system("cls");
             // LER ARQUIVO
+            char namearc[20];
+
+            printf("\n[QUAL ARQUIVO DESEJA LER ?]");
+            printf("\n[NOME DO ARQUIVO]: ");
+            scanf("%s", &namearc);
+            strcat(namearc, ".txt");
 
             /* 
                 Percorre todo o arquivo e insere em uma lista; 
                 >> "fileList();" << Função retorna uma "List"
             */
+
+            *lista = fileList(namearc);
 
             break;
 
