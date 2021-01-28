@@ -6,7 +6,7 @@
   <img alt="Arte visual de uma agenda com a foto do professor mestre Thierry" src="./.content/bREADME.png" width="350px">
 
   <p align="center">
-    Simulaçao da agenda ilusória do professor Me.<strong>Thierry</strong> como trabalho da disciplina de <em>Algoritmos II</em>. 
+    Simulação da agenda ilusória do professor Me.<strong>Thierry</strong> como trabalho da disciplina de <em>Algoritmos II</em>. 
   </p>
 
 ## ℹ - Sobre o Repositório
@@ -18,7 +18,9 @@ Foi criado para que [Cassiano Henrique Aparecido Rodrigues](https://github.com/k
 Faça um programa para gerenciar uma **agenda de compromissos** usando uma estrutura de dados
 com **alocação dinâmica de memória**. O programa deverá conter as especificações fornecidas a seguir:
 
-🚧 *(
+🚧 - *(Em breve)*
+
+## 👨🏽‍💻 - Autores
 
 - **Cassiano Henrique Aparecido Rodrigues** - [Linkedin](https://www.linkedin.com/in/cassiano-rodrigues-28bb8b16a/), [Github](https://www.github.com/kszinhu)
 
