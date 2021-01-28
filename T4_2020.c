@@ -13,7 +13,7 @@ TRABALHO DE ALGORITMO - AGENDA DO THIERRY [\] AlgII
 
 typedef struct dataNode
 {
-    int day, month, year, hours, minutes;
+    int day, month, year, hours, minutes, id;
     char description[81];
 } DataNode;
 
@@ -120,6 +120,11 @@ void printList(List *list)
         printf("\n");
         pointer = pointer->next;
     }
+}
+
+void pListDesc(List *list, DataNode data)
+{
+
 }
 
 void pop_front(List *list)
@@ -257,7 +262,8 @@ bool searchDate(DataNode data, List *list)
     */
     if (pointer == NULL)
     {
-        return false;
+        // RETORNA PONTEIRO NULO, NECESSÁRIO VERIFICAÇÃO
+        return pointer;
     }
     if (pointer->data.day == data.day)
     {
@@ -371,6 +377,7 @@ void filePrint(List *list, char *fileName)
         fprintf(arquivo, "description: %s\n", pointer->data.description);
         fprintf(arquivo, "date: %d/%d/%d\n", pointer->data.day, pointer->data.month, pointer->data.year);
         fprintf(arquivo, "schedule: %d:%d\n", pointer->data.hours, pointer->data.minutes);
+        fprintf(arquivo, "id: %d\n", pointer->data.id);
         fprintf(arquivo, "\n"); // PULAR LINHA A CADA COMPROMISSO
         pointer = pointer->next;
     }
@@ -408,15 +415,12 @@ List fileList(char *fileName)
         fscanf(arquivo, "description: %s", tempdata.description);
         while (fgetc(arquivo) != '\n')
             ;
-        printf("%s", tempdata.description); // TESTE
         fscanf(arquivo, "date: %d/%d/%d", &tempdata.day, &tempdata.month, &tempdata.year);
         while (fgetc(arquivo) != '\n')
             ;
-        printf("%d/%d/%d", tempdata.day, tempdata.month, tempdata.year); // TESTE
         fscanf(arquivo, "schedule: %d:%d", &tempdata.hours, &tempdata.minutes);
         while (fgetc(arquivo) != '\n')
             ;
-        printf("%d:%d", tempdata.hours, tempdata.minutes); // TESTE
         // CONVERTENDO EM LISTA
         push_front(list, tempdata);
     }
@@ -637,6 +641,9 @@ main()
                 break;
             }
 
+            data.id = lista->size + 1;
+            // ID SERÁ DISTINTO PARA CADA COMPROMISSO, NÃO SERÁ UM ITEM A SER ORDENADO
+
             push_front(lista, data);
             insertionSort(data, lista);
 
@@ -673,12 +680,63 @@ main()
                 scanf("%d", &data.year);
                 setbuf(stdin, NULL);
 
-                printf("\n\nPRESSIONE QUALQUER TECLA PARA SAIR");
+                // >>printListDate(lista, data);
+                // FUNÇÃO RETORNA O PONTEIRO QUE APONTA PARA A INFORMAÇÃO
+
+                /* 
+                printListDate(lista, data);
+
+                if (pointer == NULL)
+                {
+                    printf("\n[N%cO ENCONTRADO]\n");
+                    printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
+                    getch();
+                    break;
+                }
+                index = indexOf(lista, pointer);
+
+                */
+                printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
                 getch();
                 break;
 
             case '2':
                 // REMOÇÃO POR PALAVRA
+
+                int index;
+
+                /* 
+                    USUÁRIO INFORMA PALAVRA QUE DESEJA PROCURAR, 
+                    CASO ACHE A PALAVRA, RETORNA O PONTEIRO
+                    CASO CONTRÁRIO RETORNA NULL (NECESSITA VERIFICAÇÃO)
+                    >> pListDesc(lista,data);
+                    PRINTAMOS OS ELEMENTOS DA LISTA QUE CONTÉM A PALA-
+                    VRA E O USUÁRIO INFORMA O ID DO COMPROMISSO QUE DE-
+                    SEJA EXCLUIR
+                */
+
+                printf("[REMOVER COMPROMISSO POR PALAVRA]\n");
+                printf("\n[QUAL PALAVRA DESEJA PROCURAR ?]\n");
+                printf("\n[PALAVRA]: ");
+                scanf("%s", &data.description);
+                setbuf(stdin, NULL);
+
+                // >>pListDesc(lista, data);
+                // FUNÇÃO RETORNA O PONTEIRO QUE APONTA PARA A INFORMAÇÃO
+
+                /*
+                if (pointer == NULL)
+                {
+                    printf("\n[N%cO ENCONTRADO]\n");
+                    printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
+                    getch();
+                    break;
+                }
+                index = indexOf(lista, pointer);
+                */
+                printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
+                getch();
+
                 break;
 
             case '0':
