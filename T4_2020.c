@@ -13,7 +13,7 @@ TRABALHO DE ALGORITMO - AGENDA DO THIERRY [\] AlgII
 
 typedef struct dataNode
 {
-    int id, day, month, year, hours, minutes;
+    int day, month, year, hours, minutes;
     char description[81];
 } DataNode;
 
@@ -52,7 +52,7 @@ void erase(List *list, int index); // Apaga em determinado Index
 
 void insert(List *list, DataNode data, int index); // Inserir entre a lista
 
-Node *search(DataNode info, List *list);
+bool search(int info, List *list);
 
 int count(List *list, int search_for); // Conta quantidade de ocorrencias de um elemento na lista
 
@@ -120,11 +120,6 @@ void printList(List *list)
         printf("\n");
         pointer = pointer->next;
     }
-}
-
-void printListDate(List *list, DataNode data)
-{
-    
 }
 
 void pop_front(List *list)
@@ -247,7 +242,7 @@ void insert(List *list, DataNode data, int index)
     }
 }
 
-Node *search(DataNode info, List *list)
+bool searchDate(DataNode data, List *list)
 {
     Node *pointer = atPos(list, 0);
     /* Forma interativa:
@@ -262,18 +257,19 @@ Node *search(DataNode info, List *list)
     */
     if (pointer == NULL)
     {
-        // RETORNA PONTEIRO NULO, NECESSÁRIO VERIFICAÇÃO
-        return *pointer;
+        return false;
     }
-    if ((pointer->data.day == info.day) && (pointer->data.month == info.month) && (pointer->data.year == info.year))
+    if (pointer->data.day == data.day)
     {
-        return *pointer;
+        return true;
+        
     }
+    
     list->head = pointer->next;
-    return search(info, list);
+    return searchDate(data, list);
 }
 
-void insertionSort(List *list)
+void insertionSort(DataNode data, List *list)
 {
     Node *pointer = list->head;
     Node *i;
@@ -283,11 +279,38 @@ void insertionSort(List *list)
         Node *menor = i;
         for (j = i->next; j != NULL; j = j->next)
         {
-            if (j->data.day < menor->data.day)
+            if (j->data.year < menor->data.year)
             {
                 menor = j;
             }
+
+            else if(j->data.year == menor->data.year)
+            {
+
+                if(j->data.month < menor->data.month)
+                {
+                    menor = j;
+                }
+            
+                else if(j->data.month == menor->data.month)
+                {
+
+                    if(j->data.day < menor->data.day) {menor = j;}
+                    
+                    else if(j->data.day == menor->data.day)
+                    {
+
+                        if(j->data.hours < menor->data.hours) {menor = j;}
+
+                        else if(j->data.hours == menor->data.hours)
+                        {
+                            if(j->data.minutes <= menor->data.minutes) {menor = j;}
+                        }
+                    }
+                }
+            }
         }
+        
         DataNode aux = i->data;
         i->data = menor->data;
         menor->data = aux;
@@ -412,12 +435,6 @@ bool checkDate(DataNode data)
     mytime = time(NULL);
     struct tm tm = *localtime(&mytime);
 
-    // VERIFICAR SE A DATA NÃO EXCEDE A DE HOJE
-    if ((data.year < tm.tm_year + 1900) || (data.year >= tm.tm_year + 1900 && data.month < tm.tm_mon + 1) || (data.year >= tm.tm_year + 1900 && data.month >= tm.tm_mon + 1 && data.day < tm.tm_mday))
-    {
-        return false;
-    }
-
     if (data.month > 12)
     {
         return false;
@@ -483,6 +500,10 @@ bool checkDate(DataNode data)
             return false;
         }
     }
+
+    // VERIFICAR SE A DATA NÃO EXCEDE A DE HOJE
+
+    return true;
 }
 
 //--- SCREEN
@@ -556,19 +577,19 @@ main()
             // A CADA INSERÇÃO VAMOS DAR "SORT" ORDENADO PELA DATA
             printf("[ADI%c%cO DE COMPROMISSOS]\n", 128, 199);
             printf("\n[COMPROMISSO]: ");
-            gets(data.description);
+            scanf("%s", &data.description);
 
-            printf("\n[DATA DO COMPROMISSO: \"%s\"]\n", data.description);
-            printf("\n + [DIA]: ");
+            printf("\n[DATA DE REALIZA%c%cO DE:] \"%s\"", 128, 199, data.description);
+            printf("\n[DIA]: ");
             scanf("%d", &data.day);
-            printf("\n + [M%cS]: ", 210);
+            printf("\n[M%cS]: ", 210);
             scanf("%d", &data.month);
-            printf("\n + [ANO]: ");
+            printf("\n[ANO]: ");
             scanf("%d", &data.year);
-            printf("\n[HOR%cRIO DO COMPROMISSO NO DIA %d/%d/%d]\n", 181, data.day, data.month, data.year);
-            printf("\n + [HORA]: ");
+            printf("\n[HOR%cRIO DO COMPROMISSO NO DIA %2d/%2d/%4d]", 181, data.day, data.month, data.year);
+            printf("\n[HORA]> ");
             scanf("%d", &data.hours);
-            printf("\n + [MINUTOS]: ");
+            printf("\n[´MINUTOS]> ");
             scanf("%d", &data.minutes);
 
             /* 
@@ -578,16 +599,19 @@ main()
                 >> "checkDate();" retorna "bool" - TRUE or FALSE 
             */
 
+           checkDate(data);
+
             if (!checkDate(data))
             {
-                printf("\n[VOC%c ALOCOU UMA DATA INV%cLIDA]\n", 210, 181);
-                printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
+                printf("\nVOC%c ALOCOU UMA DATA ERRADA", 210);
+                printf("\n\nPRESSIONE QUALQUER TECLA PARA SAIR");
                 getch();
                 break;
             }
 
             push_front(lista, data);
-            // AQUI VAI O SORT()
+            insertionSort(data, lista);
+
 
             printf("\n\nPRESSIONE QUALQUER TECLA PARA SAIR");
             getch();
@@ -601,18 +625,17 @@ main()
                 system("cls");
             case '1':
                 // REMOÇÃO POR DATA
-                int index;
 
                 /* 
                     Usuário passa a data do compromisso na qual deseja remover, 
                     aparecerá uma lista de compromissos que acontecerá na data e após selecionar
                     irá ser acionado a função de remover determinado index.
                     >> Erase();
-                */
 
+                */
                 printf("[REMOVER COMPROMISSO PELA DATA]\n");
-                printf("\n[EM QUAL DATA %c O COMPROMISSO QUE DESEJA REMOVER ?]\n", 144);
-                printf("\n[DIA]: ", 210);
+                printf("\n[EM QUAL DATA %c O COMPROMISSO QUE DESEJA REMOVER ?]", 144);
+                printf("\n[M%cS]: ", 210);
                 scanf("%d", &data.day);
                 setbuf(stdin, NULL);
                 printf("\n[M%cS]: ");
@@ -622,19 +645,7 @@ main()
                 scanf("%d", &data.year);
                 setbuf(stdin, NULL);
 
-                // >>printListDate(lista, data);
-                // FUNÇÃO RETORNA O PONTEIRO QUE APONTA PARA A INFORMAÇÃO
-
-                if (pointer == NULL)
-                {
-                    printf("\n[N%cO ENCONTRADO]\n");
-                    printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
-                    getch();
-                    break;
-                }
-                index = indexOf(lista, pointer);
-
-                printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
+                printf("\n\nPRESSIONE QUALQUER TECLA PARA SAIR");
                 getch();
                 break;
 
@@ -668,6 +679,11 @@ main()
             printf("\n[ANO]: ");
             scanf("%d", &data.year);
             setbuf(stdin, NULL);
+
+            printf("\n");
+            searchDate(data, lista);
+
+            printList(lista);
 
             printf("\n\nPRESSIONE QUALQUER TECLA PARA SAIR");
             getch();
