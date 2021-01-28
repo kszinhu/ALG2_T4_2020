@@ -318,6 +318,7 @@ void filePrint(List *list, char *fileName)
         -------------------------
 	        AGENDA DO THIERRY    
         -------------------------
+           COMPROMISSOS SALVOS   
         description: Médico
         date: 14/3/2002
         schedule: 00:00
@@ -359,7 +360,10 @@ List fileList(char *fileName)
     // ABRE O ARQUIVO PARA LEITURA
 
     /*  COMO ESTARÁ NO ARQUIVO
-        ----
+        -------------------------
+	        AGENDA DO THIERRY    
+        -------------------------
+           COMPROMISSOS SALVOS   
         description: Médico
         date: 14/3/2002
         schedule: 00:00
