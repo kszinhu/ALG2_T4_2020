@@ -261,8 +261,7 @@ bool searchDate(DataNode data, List *list)
     }
     if (pointer->data.day == data.day)
     {
-        return true;
-        
+        return true; 
     }
     
     list->head = pointer->next;
@@ -506,6 +505,34 @@ bool checkDate(DataNode data)
     return true;
 }
 
+void pListDate(DataNode data, List *list)
+{
+    int aux = 0;
+    Node *pointer = list->head;
+
+
+    while (pointer != NULL)
+    {
+        
+        if(pointer -> data.day == data.day && pointer -> data.month == data.month && pointer -> data.year == data.year)
+        {
+        
+        printf("[COMPROMISSO]: %s\n", pointer->data.description);
+        printf("[DATA]: %2d/%2d/%4d\n", pointer->data.day, pointer->data.month, pointer->data.year);
+        printf("[HOR%cRIO]: %d:%d\n", 181, pointer->data.hours, pointer->data.minutes);
+        printf("\n");
+        pointer = pointer->next;
+        aux++;
+        
+        }
+    }
+
+    if(aux == 0){
+        printf("SEM COMPROMISSOS\n\n");
+    }
+
+}
+
 //--- SCREEN
 
 int menu()
@@ -558,6 +585,7 @@ main()
 {
     List *lista = createList();
     DataNode data;
+    int dia, mes, ano;
 
     bool control = true;
 
@@ -681,9 +709,18 @@ main()
             setbuf(stdin, NULL);
 
             printf("\n");
-            searchDate(data, lista);
-
-            printList(lista);
+            
+            //searchDate(data, lista);
+            
+            /*if(searchDate(data, lista) == false)
+            {
+                printf("SEM COMPROMISSOS NESSE DIA\n");
+            }*/
+            
+            /*Ela está com um problema de as vezes crashar o código, não estou entendendo o que tem
+            de errado, se quiser dar uma olhada, nao eh sempre que da o erro*/
+            
+            pListDate(data, lista); 
 
             printf("\n\nPRESSIONE QUALQUER TECLA PARA SAIR");
             getch();
