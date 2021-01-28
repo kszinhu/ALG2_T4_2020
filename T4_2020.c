@@ -309,7 +309,6 @@ void filePrint(List *list, char *fileName)
 {
     FILE *arquivo;
     DataNode tempdata;
-    List *list;
 
     arquivo = fopen(fileName, "w");
     // ABRE O ARQUIVO PARA ESCRITA
@@ -344,7 +343,7 @@ void filePrint(List *list, char *fileName)
         fprintf(arquivo, "description: %s\n", pointer->data.description);
         fprintf(arquivo, "date: %d/%d/%d\n", pointer->data.day, pointer->data.month, pointer->data.year);
         fprintf(arquivo, "schedule: %d:%d\n", pointer->data.hours, pointer->data.minutes);
-        Fprintf(arquivo, "\n"); // PULAR LINHA A CADA COMPROMISSO
+        fprintf(arquivo, "\n"); // PULAR LINHA A CADA COMPROMISSO
         pointer = pointer->next;
     }
 }
@@ -400,6 +399,82 @@ List fileList(char *fileName)
     return *list;
 }
 
+bool checkDate(DataNode data)
+{
+    //DATA DE HOJE
+    time_t mytime;
+    mytime = time(NULL);
+    struct tm tm = *localtime(&mytime);
+
+    if (data.month > 12)
+    {
+        return false;
+    }
+    else if (data.month == 2)
+    {
+        /* 
+            CASO O MÊS SEJA FEVEREIRO, VERIFICAMOS SE É ANO BISSEXTO
+            SE FOR ADMITIRÁ QUE O MÊS VAI ATÉ 29 DIAS, CASO CONTRÁRIO, APENAS 28 DIAS 
+        */
+        if (data.year % 4 == 0)
+        {
+            // SE FOR ANO BISSEXTO
+            if (data.day > 29)
+            {
+                return false;
+            }
+        }
+        else if (data.day > 28)
+        {
+            return false;
+        }
+    }
+
+    else if (data.month < 7)
+    /* 
+        CASO O MÊS VÁ DE 1 A 6, 
+        TODOS OS MESES PARES VÃO ATÉ 30 DIAS 
+        E ÍMPARES A 31 DIAS.
+    */
+    {
+        if (data.month % 2 == 0)
+        {
+            // CASO MÊS FOR PAR
+            if (data.day > 30)
+            {
+                return false;
+            }
+        }
+        else if (data.day > 31)
+        {
+            // CASO MÊS FOR ÍMPAR
+            return false;
+        }
+    }
+    else if (data.month > 6)
+    {
+        /* 
+            CASO O MÊS SEJA MAIOR QUE 6, TODOS OS
+            ÍMPARES VÃO ATÉ DIA 30, E OS MESES PARES A DIA 31
+        */
+        if (data.month % 2 == 0)
+        {
+            // CASO MÊS FOR PAR
+            if (data.day > 31)
+            {
+                return false;
+            }
+        }
+        else if (data.day > 30)
+        {
+            // CASO MÊS FOR ÍMPAR
+            return false;
+        }
+    }
+
+    // VERIFICAR SE A DATA NÃO EXCEDE A DE HOJE
+}
+
 //--- SCREEN
 
 int menu()
@@ -453,11 +528,6 @@ main()
     List *lista = createList();
     DataNode data;
 
-    //DATA DE HOJE
-    time_t mytime;
-    mytime = time(NULL);
-    struct tm tm = *localtime(&mytime);
-
     bool control = true;
 
     system("cls");
@@ -491,6 +561,21 @@ main()
             printf("\n[´MINUTOS]> ");
             scanf("%d", &data.minutes);
 
+            /* 
+                CONFIRMAÇÃO SE A DATA FOR VÁLIDA:
+                - VERIFICA SE NÃO É PASSADO; (ANTERIOR A DATA ATUAL)
+                - VERIFICA SE NÃO EXISTE DATA EXISTENTE. (30/02/X)
+                >> "checkDate();" retorna "bool" - TRUE or FALSE 
+            */
+
+            if (!checkDate(data))
+            {
+                printf("\nVOC%c ALOCOU UMA DATA ERRADA", 210);
+                printf("\n\nPRESSIONE QUALQUER TECLA PARA SAIR");
+                getch();
+                break;
+            }
+
             push_front(lista, data);
             // AQUI VAI O SORT()
 
@@ -506,6 +591,28 @@ main()
                 system("cls");
             case '1':
                 // REMOÇÃO POR DATA
+
+                /* 
+                    Usuário passa a data do compromisso na qual deseja remover, 
+                    aparecerá uma lista de compromissos que acontecerá na data e após selecionar
+                    irá ser acionado a função de remover determinado index.
+                    >> Erase();
+
+                */
+                printf("[REMOVER COMPROMISSO PELA DATA]\n");
+                printf("\n[EM QUAL DATA %c O COMPROMISSO QUE DESEJA REMOVER ?]", 144);
+                printf("\n[M%cS]: ", 210);
+                scanf("%d", &data.day);
+                setbuf(stdin, NULL);
+                printf("\n[M%cS]: ");
+                scanf("%d", &data.month);
+                setbuf(stdin, NULL);
+                printf("\n[ANO]: ");
+                scanf("%d", &data.year);
+                setbuf(stdin, NULL);
+
+                printf("\n\nPRESSIONE QUALQUER TECLA PARA SAIR");
+                getch();
                 break;
 
             case '2':
@@ -601,7 +708,6 @@ main()
                 >> "fileList();" << Função retorna uma "List"
                 Após returna uma "List" será atribuída a Lista vigente no código
             */
-            char fileName[20];
 
             printf("[LER ARQUIVO BACKUP]\n");
             printf("\n[QUAL ARQUIVO DESEJA LER ?]");
