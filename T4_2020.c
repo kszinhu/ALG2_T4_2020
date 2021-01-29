@@ -115,16 +115,72 @@ void printList(List *list)
     while (pointer != NULL)
     {
         printf("[COMPROMISSO]: %s\n", pointer->data.description);
-        printf("[DATA]: %2d/%2d/%4d\n", pointer->data.day, pointer->data.month, pointer->data.year);
+        printf("[DATA]: %d/%d/%d\n", pointer->data.day, pointer->data.month, pointer->data.year);
         printf("[HOR%cRIO]: %d:%d\n", 181, pointer->data.hours, pointer->data.minutes);
         printf("\n");
         pointer = pointer->next;
     }
 }
 
+void pListDate(List *list, DataNode data)
+{
+    int count = 0;
+    if (isEmpty(list))
+    {
+        printf("\n[SEM COMPROMISSOS]\n");
+        return;
+    }
+
+    Node *pointer = list->head;
+
+    while (pointer != NULL)
+    {
+
+        if (pointer->data.day == data.day && pointer->data.month == data.month && pointer->data.year == data.year)
+        {
+            printf(" %c [ID]: %d\n", 254, pointer->data.id);
+            printf("[COMPROMISSO]: %s\n", pointer->data.description);
+            printf("[DATA]: %d/%d/%d\n", pointer->data.day, pointer->data.month, pointer->data.year);
+            printf("[HOR%cRIO]: %d:%d\n", 181, pointer->data.hours, pointer->data.minutes);
+            printf("\n");
+            pointer = pointer->next;
+            count++;
+        }
+    }
+
+    if (count == 0)
+    {
+        printf("\n[SEM COMPROMISSOS NA DATA]\n");
+    }
+}
+
 void pListDesc(List *list, DataNode data)
 {
+    int count = 0;
+    if (isEmpty(list))
+    {
+        printf("\n[SEM COMPROMISSOS]\n");
+        return;
+    }
 
+    Node *pointer = atPos(list, 0);
+    while (pointer != NULL)
+    {
+        if (strstr(pointer->data.description, data.description) != NULL)
+        {
+            printf(" %c [ID]: %d\n", 254, pointer->data.id);
+            printf("[COMPROMISSO]: %s\n", pointer->data.description);
+            printf("[DATA]: %d/%d/%d\n", pointer->data.day, pointer->data.month, pointer->data.year);
+            printf("[HOR%cRIO]: %d:%d\n", 181, pointer->data.hours, pointer->data.minutes);
+            printf("\n");
+            count++;
+        }
+        pointer = pointer->next;
+    }
+    if (count == 0)
+    {
+        printf("\n[NENHUM COMPROMISSO FOI ENCONTRADO COM \"%s\"]\n", data.description);
+    }
 }
 
 void pop_front(List *list)
@@ -247,31 +303,31 @@ void insert(List *list, DataNode data, int index)
     }
 }
 
-bool searchDate(DataNode data, List *list)
+Node *searchID(DataNode data, List *list)
 {
     Node *pointer = atPos(list, 0);
     /* Forma interativa:
      for (; pointer != NULL; pointer = pointer->next)
     {
-        if (pointer->data.id == num)
+        if (pointer->data.id == data.id)
         {
-            return true;
+            return pointer;
         }
     }
-    return false;
+    return pointer;
     */
     if (pointer == NULL)
     {
         // RETORNA PONTEIRO NULO, NECESSÁRIO VERIFICAÇÃO
         return pointer;
     }
-    if (pointer->data.day == data.day)
+    if (pointer->data.id == data.id)
     {
-        return true; 
+        return pointer;
     }
-    
+
     list->head = pointer->next;
-    return searchDate(data, list);
+    return searchID(data, list);
 }
 
 void insertionSort(DataNode data, List *list)
@@ -289,33 +345,42 @@ void insertionSort(DataNode data, List *list)
                 menor = j;
             }
 
-            else if(j->data.year == menor->data.year)
+            else if (j->data.year == menor->data.year)
             {
 
-                if(j->data.month < menor->data.month)
+                if (j->data.month < menor->data.month)
                 {
                     menor = j;
                 }
-            
-                else if(j->data.month == menor->data.month)
+
+                else if (j->data.month == menor->data.month)
                 {
 
-                    if(j->data.day < menor->data.day) {menor = j;}
-                    
-                    else if(j->data.day == menor->data.day)
+                    if (j->data.day < menor->data.day)
+                    {
+                        menor = j;
+                    }
+
+                    else if (j->data.day == menor->data.day)
                     {
 
-                        if(j->data.hours < menor->data.hours) {menor = j;}
-
-                        else if(j->data.hours == menor->data.hours)
+                        if (j->data.hours < menor->data.hours)
                         {
-                            if(j->data.minutes <= menor->data.minutes) {menor = j;}
+                            menor = j;
+                        }
+
+                        else if (j->data.hours == menor->data.hours)
+                        {
+                            if (j->data.minutes <= menor->data.minutes)
+                            {
+                                menor = j;
+                            }
                         }
                     }
                 }
             }
         }
-        
+
         DataNode aux = i->data;
         i->data = menor->data;
         menor->data = aux;
@@ -421,6 +486,9 @@ List fileList(char *fileName)
         fscanf(arquivo, "schedule: %d:%d", &tempdata.hours, &tempdata.minutes);
         while (fgetc(arquivo) != '\n')
             ;
+        fscanf(arquivo, "id: %d", &tempdata.id);
+        while (fgetc(arquivo) != '\n')
+            ;
         // CONVERTENDO EM LISTA
         push_front(list, tempdata);
     }
@@ -507,34 +575,6 @@ bool checkDate(DataNode data)
     // VERIFICAR SE A DATA NÃO EXCEDE A DE HOJE
 
     return true;
-}
-
-void pListDate(DataNode data, List *list)
-{
-    int aux = 0;
-    Node *pointer = list->head;
-
-
-    while (pointer != NULL)
-    {
-        
-        if(pointer -> data.day == data.day && pointer -> data.month == data.month && pointer -> data.year == data.year)
-        {
-        
-        printf("[COMPROMISSO]: %s\n", pointer->data.description);
-        printf("[DATA]: %2d/%2d/%4d\n", pointer->data.day, pointer->data.month, pointer->data.year);
-        printf("[HOR%cRIO]: %d:%d\n", 181, pointer->data.hours, pointer->data.minutes);
-        printf("\n");
-        pointer = pointer->next;
-        aux++;
-        
-        }
-    }
-
-    if(aux == 0){
-        printf("SEM COMPROMISSOS\n\n");
-    }
-
 }
 
 //--- SCREEN
@@ -631,7 +671,7 @@ main()
                 >> "checkDate();" retorna "bool" - TRUE or FALSE 
             */
 
-           checkDate(data);
+            checkDate(data);
 
             if (!checkDate(data))
             {
@@ -646,7 +686,6 @@ main()
 
             push_front(lista, data);
             insertionSort(data, lista);
-
 
             printf("\n\nPRESSIONE QUALQUER TECLA PARA SAIR");
             getch();
@@ -680,22 +719,20 @@ main()
                 scanf("%d", &data.year);
                 setbuf(stdin, NULL);
 
-                // >>printListDate(lista, data);
-                // FUNÇÃO RETORNA O PONTEIRO QUE APONTA PARA A INFORMAÇÃO
-
-                /* 
-                printListDate(lista, data);
-
-                if (pointer == NULL)
+                pListDate(lista, data);
+                printf("\n[QUAL ID DESEJA REMOVER ?]\n");
+                printf("\n[CASO NAO DESEJA REMOVER, DIGITE \"999\"]\n");
+                printf("\n[ID]: ");
+                scanf("%d", &data.id);
+                if (data.id != 999)
                 {
-                    printf("\n[N%cO ENCONTRADO]\n");
-                    printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
-                    getch();
-                    break;
+                    /* 
+                        "searchID" RETORNA O "NODE" PARA O "indexOf" CAPTURANDO 
+                        O ÍNDICE E ENVIAR PARA REMOÇÃO  
+                    */
+                    erase(lista, indexOf(lista, searchID(data, lista)));
                 }
-                index = indexOf(lista, pointer);
 
-                */
                 printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
                 getch();
                 break;
@@ -707,12 +744,12 @@ main()
 
                 /* 
                     USUÁRIO INFORMA PALAVRA QUE DESEJA PROCURAR, 
-                    CASO ACHE A PALAVRA, RETORNA O PONTEIRO
-                    CASO CONTRÁRIO RETORNA NULL (NECESSITA VERIFICAÇÃO)
+                    CASO ACHE A PALAVRA, PRINTA A LISTA COM O ID
                     >> pListDesc(lista,data);
-                    PRINTAMOS OS ELEMENTOS DA LISTA QUE CONTÉM A PALA-
-                    VRA E O USUÁRIO INFORMA O ID DO COMPROMISSO QUE DE-
-                    SEJA EXCLUIR
+                    E O USUÁRIO INFORMA O ID DO COMPROMISSO QUE DE-
+                    SEJA EXCLUIR, CHAMANDO A FUNÇÃO "seachID()" QUE
+                    RETORNA O "NODE" (PONTEIRO)
+                    CASO CONTRÁRIO RETORNA NULL (NECESSITA VERIFICAÇÃO)
                 */
 
                 printf("[REMOVER COMPROMISSO POR PALAVRA]\n");
@@ -721,22 +758,22 @@ main()
                 scanf("%s", &data.description);
                 setbuf(stdin, NULL);
 
-                // >>pListDesc(lista, data);
-                // FUNÇÃO RETORNA O PONTEIRO QUE APONTA PARA A INFORMAÇÃO
-
-                /*
-                if (pointer == NULL)
+                pListDesc(lista, data);
+                printf("\n[QUAL ID DESEJA REMOVER ?]\n");
+                printf("\n[CASO NAO DESEJA REMOVER, DIGITE \"999\"]\n");
+                printf("\n[ID]: ");
+                scanf("%d", &data.id);
+                if (data.id != 999)
                 {
-                    printf("\n[N%cO ENCONTRADO]\n");
-                    printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
-                    getch();
-                    break;
+                    /* 
+                        "searchID" RETORNA O "NODE" PARA O "indexOf" PEGAR 
+                        O ÍNDICE E ENVIAR PARA REMOÇÃO  
+                    */
+                    erase(lista, indexOf(lista, searchID(data, lista)));
                 }
-                index = indexOf(lista, pointer);
-                */
+
                 printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
                 getch();
-
                 break;
 
             case '0':
@@ -767,18 +804,18 @@ main()
             setbuf(stdin, NULL);
 
             printf("\n");
-            
+
             //searchDate(data, lista);
-            
+
             /*if(searchDate(data, lista) == false)
             {
                 printf("SEM COMPROMISSOS NESSE DIA\n");
             }*/
-            
+
             /*Ela está com um problema de as vezes crashar o código, não estou entendendo o que tem
             de errado, se quiser dar uma olhada, nao eh sempre que da o erro*/
-            
-            pListDate(data, lista); 
+
+            pListDate(lista, data);
 
             printf("\n\nPRESSIONE QUALQUER TECLA PARA SAIR");
             getch();
