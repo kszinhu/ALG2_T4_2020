@@ -581,6 +581,11 @@ bool checkDate(DataNode data)
     return true;
 }
 
+void ChangeNode(Node *pointer, DataNode data)
+{
+    pointer->data = data;
+}
+
 //--- SCREEN
 
 int menu()
@@ -831,11 +836,70 @@ main()
             setbuf(stdin, NULL);
             system("cls");
             // ALTERAR COMPROMISSO
+            switch (menuChange())
+            {
+            case '1':
+                // ALTERAR PELA DATA
 
-            /* 
-                Usuário informa a data do compromisso e seleciona um ID correspondente. 
-                >> "ChangeDate();" << Função "void"
-            */
+                printf("\n[EM QUAL DATA %c O COMPROMISSO QUE DESEJA ALTERAR ?]", 144);
+                printf("\n <-> [DIA]: ");
+                scanf("%d", &data.day);
+                setbuf(stdin, NULL);
+                printf("\n <-> [M%cS]: ", 210);
+                scanf("%d", &data.month);
+                setbuf(stdin, NULL);
+                printf("\n <-> [ANO]: ");
+                scanf("%d", &data.year);
+                setbuf(stdin, NULL);
+                pListDate(lista, data);
+
+                printf("\n[QUAL ID CORRESPONDE AO COMPROMISSO ?]\n");
+                printf("\n[CASO NAO DESEJA REMOVER, DIGITE \"999\"]\n");
+                printf("\n - [ID]: ");
+                scanf("%d", &data.id);
+                setbuf(stdin, NULL);
+
+                if (data.id != 999)
+                {
+                    // FUNÇÃO QUE RETORNA DATANODE
+                    ChangeNode(searchID(data, lista), data);
+                }
+
+                printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
+                getch();
+                break;
+
+            case '2':
+                // ALTERAR PELA PALAVRA
+                printf("[ALTERAR COMPROMISSO POR PALAVRA]\n");
+                printf("\n[QUAL PALAVRA DESEJA PROCURAR ?]\n");
+                printf("\n - [PALAVRA]: ");
+                scanf("%s", &data.description);
+                setbuf(stdin, NULL);
+
+                pListDesc(lista, data);
+
+                printf("\n[QUAL ID CORRESPONDE AO COMPROMISSO ?]\n");
+                printf("\n[CASO NAO DESEJA REMOVER, DIGITE \"999\"]\n");
+                printf("\n - [ID]: ");
+                scanf("%d", &data.id);
+                setbuf(stdin, NULL);
+
+                if (data.id != 999)
+                {
+                    // FUNÇÃO QUE RETORNA DATANODE
+                    ChangeNode(searchID(data, lista), data);
+                }
+
+                printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
+                getch();
+                break;
+
+            case '0':
+                // SAIR DO "menuChange()"
+                continue;
+            }
+
             printf("[ALTERAR COMPROMISSO]\n");
             printf("\n[DE QUAL DATA %c O COMPORMISSO QUE DESEJA ALTERAR ?]", 144);
             printf("\n <-> [DIA]: ");
@@ -848,7 +912,7 @@ main()
             scanf("%d", &data.year);
             setbuf(stdin, NULL);
 
-            // >> "ChangeDate();"
+            pListDate(lista, data);
 
             printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
             getch();
