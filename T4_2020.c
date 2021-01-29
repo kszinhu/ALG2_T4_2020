@@ -1,7 +1,8 @@
 /*
-TRABALHO DE ALGORITMO - AGENDA DO THIERRY [\] AlgII
-> Cassiano Rodrigues
-> 26/01/2020
+    AGENDA DO THIERRY [\] AlgII-T4-2020
+    > Cassiano Rodrigues
+    > João Pedro Vieira Rodrigues
+    > 26/01/2020
 */
 
 #include <stdio.h>
@@ -122,13 +123,13 @@ void printList(List *list)
     }
 }
 
-void pListDate(List *list, DataNode data)
+int pListDate(List *list, DataNode data)
 {
     int count = 0;
     if (isEmpty(list))
     {
-        printf("\n[SEM COMPROMISSOS]\n");
-        return;
+        printf("\n  [SEM COMPROMISSOS]\n");
+        return 0;
     }
 
     Node *pointer = atPos(list, 0);
@@ -148,17 +149,19 @@ void pListDate(List *list, DataNode data)
 
     if (count == 0)
     {
-        printf("\n[SEM COMPROMISSOS NA DATA]\n");
+        printf("\n  [SEM COMPROMISSOS NA DATA]\n");
+        return 0;
     }
+    return count;
 }
 
-void pListDesc(List *list, DataNode data)
+int pListDesc(List *list, DataNode data)
 {
     int count = 0;
     if (isEmpty(list))
     {
-        printf("\n[SEM COMPROMISSOS]\n");
-        return;
+        printf("\n  [SEM COMPROMISSOS]\n");
+        return 0;
     }
 
     Node *pointer = atPos(list, 0);
@@ -177,8 +180,10 @@ void pListDesc(List *list, DataNode data)
     }
     if (count == 0)
     {
-        printf("\n[NENHUM COMPROMISSO FOI ENCONTRADO COM \"%s\"]\n", data.description);
+        printf("\n  [NENHUM COMPROMISSO FOI ENCONTRADO COM \"%s\"]\n", data.description);
+        return 0;
     }
+    return count;
 }
 
 void pop_front(List *list)
@@ -304,8 +309,8 @@ void insert(List *list, DataNode data, int index)
 Node *searchID(DataNode data, List *list)
 {
     Node *pointer = atPos(list, 0);
-    /* Forma interativa:
-     for (; pointer != NULL; pointer = pointer->next)
+    // Forma interativa:
+    for (; pointer != NULL; pointer = pointer->next)
     {
         if (pointer->data.id == data.id)
         {
@@ -313,7 +318,8 @@ Node *searchID(DataNode data, List *list)
         }
     }
     return pointer;
-    */
+
+    /* FORMA RECURSIVA
     if (pointer == NULL)
     {
         // RETORNA PONTEIRO NULO, NECESSÁRIO VERIFICAÇÃO
@@ -325,7 +331,7 @@ Node *searchID(DataNode data, List *list)
     }
 
     list->head = pointer->next;
-    return searchID(data, list);
+    return searchID(data, list); */
 }
 
 void insertionSort(DataNode data, List *list)
@@ -444,6 +450,8 @@ void filePrint(List *list, char *fileName)
         fprintf(arquivo, "\n"); // PULAR LINHA A CADA COMPROMISSO
         pointer = pointer->next;
     }
+    // GRAVOU NO ARQUIVO, FECHAMOS O ARQUIVO
+    fclose(arquivo);
 }
 
 List *fileList(char *fileName)
@@ -454,6 +462,13 @@ List *fileList(char *fileName)
     int i;
 
     arquivo = fopen(fileName, "r");
+    if (arquivo == NULL)
+    {
+        printf("\n\t        [ERRO AO ABRIR O ARQUIVO]\n");
+        printf("\n\t   [PRESSIONE QUALQUER TECLA PARA SAIR]\n");
+        getch();
+        return NULL;
+    }
     // ABRE O ARQUIVO PARA LEITURA
 
     /*  COMO ESTARÁ NO ARQUIVO
@@ -575,7 +590,6 @@ bool checkDate(DataNode data)
     // VERIFICAR SE A DATA NÃO EXCEDE A DE HOJE
     if ((data.year < tm.tm_year + 1900) || ((data.year == tm.tm_year + 1900) && (data.month < tm.tm_mon + 1)) || ((data.year == tm.tm_year + 1900) && (data.month == tm.tm_mon + 1) && (data.day < tm.tm_mday)))
     {
-        printf("a");
         return false;
     }
     return true;
@@ -588,39 +602,39 @@ DataNode addPoint()
     do
     {
         // FUNÇÃO PARA CADASTRO DE DATANODE's
-        printf("[ADI%c%cO DE COMPROMISSOS]\n", 128, 199);
+        printf("\n\t   [ADI%c%cO DE COMPROMISSOS]\n", 128, 199);
         printf("\n + [COMPROMISSO]: ");
         gets(data.description);
 
-        printf("\n[DATA DE REALIZA%c%cO DE: \"%s\"]", 128, 199, data.description);
-        printf("\n + [DIA]: ");
+        printf("\n  [DATA DE REALIZA%c%cO DE: \"%s\"]\n", 128, 199, data.description);
+        printf(" + [DIA]: ");
         scanf("%d", &data.day);
         setbuf(stdin, NULL);
-        printf("\n + [M%cS]: ", 210);
+        printf(" + [M%cS]: ", 210);
         scanf("%d", &data.month);
         setbuf(stdin, NULL);
-        printf("\n + [ANO]: ");
+        printf(" + [ANO]: ");
         scanf("%d", &data.year);
         setbuf(stdin, NULL);
 
         if (!checkDate(data))
         {
-            printf("\n[VOC%c ALOCOU UMA DATA ERRADA]", 210);
+            printf("\n\t[VOC%c ALOCOU UMA DATA ERRADA]", 210);
             control = false;
         }
         else
         {
             control = true;
         }
-
-        printf("\n[HOR%cRIO DO COMPROMISSO NO DIA %d/%d/%d]", 181, data.day, data.month, data.year);
-        printf("\n + [HORA]> ");
-        scanf("%d", &data.hours);
-        setbuf(stdin, NULL);
-        printf("\n + [MINUTOS]> ");
-        scanf("%d", &data.minutes);
-        setbuf(stdin, NULL);
     } while (!control);
+
+    printf("\n  [HOR%cRIO DO COMPROMISSO NO DIA %d/%d/%d]\n", 181, data.day, data.month, data.year);
+    printf(" + [HORA]> ");
+    scanf("%d", &data.hours);
+    setbuf(stdin, NULL);
+    printf(" + [MINUTOS]> ");
+    scanf("%d", &data.minutes);
+    setbuf(stdin, NULL);
     return data;
 }
 
@@ -658,8 +672,8 @@ int menu()
     printf("\n"); // ESPAÇO
     printf("\t     .----------------------------.\n");
     printf("\t     |     -- DATA DE HOJE --     |\n");
-    printf("\t     |        %2d/%2d/%4d          |\n", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900);
-    printf("\t     |                            |\n");
+    printf("\t     |         %2d/%2d/%4d         |\n", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900);
+    printf("\t     |           %2d:%2d            |\n", tm.tm_hour, tm.tm_min);
     printf("\t     '----------------------------'\n");
 
     int tecla = getch();
@@ -675,7 +689,6 @@ int menuRemove()
     printf("\t'--------------------------------------'\n");
     printf("\n"); // ESPAÇO
     printf("\t.--------------------------------------.\n");
-    printf("\t|                                      |\n");
     printf("\t| 1. REMOVER COMPROMISSO PELA DATA     |\n");
     printf("\t| 2. REMOVER COMPROMISSO POR PALAVRA   |\n");
     printf("\t|                                      |\n");
@@ -696,11 +709,10 @@ int menuChange()
     printf("\t'--------------------------------------'\n");
     printf("\n"); // ESPAÇO
     printf("\t.--------------------------------------.\n");
-    printf("\t|                                      |\n");
     printf("\t| 1. ALTERAR COMPROMISSO PELA DATA     |\n");
     printf("\t| 2. ALTERAR COMPROMISSO POR PALAVRA   |\n");
     printf("\t|                                      |\n");
-    printf("\t| 0. SAIR DO MENU                   |\n");
+    printf("\t| 0. SAIR DO MENU                      |\n");
     printf("\t'--------------------------------------'\n");
     printf("\n"); // ESPAÇO
 
@@ -708,15 +720,28 @@ int menuChange()
     return tecla;
 }
 
+void end()
+{
+    printf("\t .--------------------------------------.\n");
+    printf("\t |                                      |\n");
+    printf("\t |           AGENDA DO THIERRY          |\n");
+    printf("\t |                                      |\n");
+    printf("\t '--------------------------------------'\n");
+    printf("\n"); // ESPAÇO
+    printf("\t.----------------------------------------.\n");
+    printf("\t| CASSIANO HENRIQUE APARECIDO RODRIGUES  |\n");
+    printf("\t| JO%cO PEDRO VIEIRA RODRIGUES            |\n", 199);
+    printf("\t'----------------------------------------'\n");
+    printf("\n"); // ESPAÇO
+}
+
 main()
 {
     List *lista = createList();
     DataNode data;
     int num;
-
     bool control = true, controlaux = true;
-
-    system("cls");
+    system("MODE con cols=56 lines=30 ");
 
     do
     {
@@ -737,7 +762,7 @@ main()
             push_front(lista, data);
             insertionSort(data, lista);
 
-            printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
+            printf("\n\t   [PRESSIONE QUALQUER TECLA PARA SAIR]\n");
             getch();
             break;
 
@@ -758,8 +783,8 @@ main()
                     >> Erase();
 
                 */
-                printf("[REMOVER COMPROMISSO PELA DATA]\n");
-                printf("\n[EM QUAL DATA %c O COMPROMISSO QUE DESEJA REMOVER ?]", 144);
+                printf("\n\t   [REMOVER COMPROMISSO PELA DATA]\n");
+                printf("\n  [EM QUAL DATA %c O COMPROMISSO QUE DESEJA REMOVER ?]", 144);
                 printf("\n - [DIA]: ");
                 scanf("%d", &data.day);
                 setbuf(stdin, NULL);
@@ -770,25 +795,28 @@ main()
                 scanf("%d", &data.year);
                 setbuf(stdin, NULL);
 
-                pListDate(lista, data);
-                printf("\n[QUAL ID DESEJA REMOVER ?]\n");
-                printf("\n[CASO N%cO DESEJA REMOVER, DIGITE \"999\"]\n", 199);
-                printf("\n - [ID]: ");
-                scanf("%d", &data.id);
-                if (data.id != 999)
+                if (pListDate(lista, data) != 0)
                 {
-                    /* 
+                    printf("\n\t   [QUAL ID DESEJA REMOVER ?]\n");
+                    printf("\n  [CASO N%cO DESEJA REMOVER, DIGITE \"999\"]\n", 199);
+                    printf("\n - [ID]: ");
+                    scanf("%d", &data.id);
+                    if (data.id != 999)
+                    {
+                        /* 
                         "searchID" RETORNA O "NODE" PARA O "indexOf" CAPTURANDO 
                         O ÍNDICE E ENVIAR PARA REMOÇÃO  
                     */
-                    erase(lista, indexOf(lista, searchID(data, lista)));
+                        erase(lista, indexOf(lista, searchID(data, lista)));
+                    }
                 }
 
-                printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
+                printf("\n\t   [PRESSIONE QUALQUER TECLA PARA SAIR]\n");
                 getch();
                 continue;
 
             case '2':
+                system("cls");
                 // REMOÇÃO POR PALAVRA
 
                 /* 
@@ -801,28 +829,29 @@ main()
                     CASO CONTRÁRIO RETORNA NULL (NECESSITA VERIFICAÇÃO)
                 */
 
-                printf("[REMOVER COMPROMISSO POR PALAVRA]\n");
-                printf("\n[QUAL PALAVRA DESEJA PROCURAR ?]\n");
+                printf("\n\t   [REMOVER COMPROMISSO POR PALAVRA]\n");
+                printf("\n  [QUAL PALAVRA DESEJA PROCURAR ?]\n");
                 printf("\n - [PALAVRA]: ");
                 scanf("%s", &data.description);
                 setbuf(stdin, NULL);
 
-                pListDesc(lista, data);
-                printf("\n[QUAL ID DESEJA REMOVER ?]\n");
-                printf("\n[CASO NAO DESEJA REMOVER, DIGITE \"999\"]\n");
-                printf("\n - [ID]: ");
-                scanf("%d", &data.id);
-                setbuf(stdin, NULL);
-                if (data.id != 999)
+                if (pListDesc(lista, data) != 0)
                 {
-                    /* 
+                    printf("\n  [QUAL ID DESEJA REMOVER ?]");
+                    printf("\n  [CASO NAO DESEJA REMOVER, DIGITE \"999\"]\n");
+                    printf("\n - [ID]: ");
+                    scanf("%d", &data.id);
+                    setbuf(stdin, NULL);
+                    if (data.id != 999)
+                    {
+                        /* 
                         "searchID" RETORNA O "NODE" PARA O "indexOf" PEGAR 
                         O ÍNDICE E ENVIAR PARA REMOÇÃO  
                     */
-                    erase(lista, indexOf(lista, searchID(data, lista)));
+                        erase(lista, indexOf(lista, searchID(data, lista)));
+                    }
                 }
-
-                printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
+                printf("\n\t   [PRESSIONE QUALQUER TECLA PARA SAIR]\n");
                 getch();
                 continue;
 
@@ -841,21 +870,23 @@ main()
                 e printa caso verdadeiro.
                 >> "searchDate();" << Função "void"
             */
-            printf("[MOSTRAR COMPROMISSOS]\n");
-            printf("\n[QUAL DATA DESEJA CONFERIR ?]");
-            printf("\n %c [DIA]: ", 254);
+            printf("\n\t   [MOSTRAR COMPROMISSOS]\n");
+            printf("\n  [QUAL DATA DESEJA CONFERIR ?]");
+            printf(" %c [DIA]: ", 254);
             scanf("%d", &data.day);
             setbuf(stdin, NULL);
-            printf("\n %c [M%cS]: ", 254, 210);
+            printf(" %c [M%cS]: ", 254, 210);
             scanf("%d", &data.month);
             setbuf(stdin, NULL);
-            printf("\n %c [ANO]: ", 254);
+            printf(" %c [ANO]: ", 254);
             scanf("%d", &data.year);
             setbuf(stdin, NULL);
 
-            pListDate(lista, data);
-
-            printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
+            if (pListDate(lista, data) == 0)
+            {
+                printf("\n  [SEM COMPROMISSOS NA DATA]\n");
+            }
+            printf("\n\t   [PRESSIONE QUALQUER TECLA PARA SAIR]\n");
             getch();
             break;
 
@@ -868,7 +899,8 @@ main()
             case '1':
                 system("cls");
                 // ALTERAR PELA DATA
-                printf("\n[EM QUAL DATA %c O COMPROMISSO QUE DESEJA ALTERAR ?]", 144);
+                printf("\n\t   [ALTERAR COMPROMISSO PELA DATA]\n");
+                printf("\n  [EM QUAL DATA %c O COMPROMISSO QUE DESEJA ALTERAR ?]", 144);
                 printf("\n <-> [DIA]: ");
                 scanf("%d", &data.day);
                 setbuf(stdin, NULL);
@@ -878,51 +910,55 @@ main()
                 printf("\n <-> [ANO]: ");
                 scanf("%d", &data.year);
                 setbuf(stdin, NULL);
-                pListDate(lista, data);
-
-                printf("\n[QUAL ID CORRESPONDE AO COMPROMISSO ?]\n");
-                printf("\n[CASO NAO DESEJA REMOVER, DIGITE \"999\"]\n");
-                printf("\n <-> [ID]: ");
-                scanf("%d", &num);
-                setbuf(stdin, NULL);
-
-                if (data.id != 999)
+                if (pListDate(lista, data) != 0)
                 {
-                    // FUNÇÃO QUE RETORNA DATANODE
-                    data = addPoint();
-                    ChangeNode(searchID(data, lista), data);
-                }
+                    printf("\n  [QUAL ID CORRESPONDE AO COMPROMISSO ?]\n");
+                    printf("\n  [CASO NAO DESEJA REMOVER, DIGITE \"999\"]\n");
+                    printf("\n <-> [ID]: ");
+                    scanf("%d", &num);
+                    setbuf(stdin, NULL);
 
-                printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
+                    if (data.id != 999)
+                    {
+                        system("cls");
+                        // FUNÇÃO QUE RETORNA DATANODE
+                        data = addPoint();
+                        data.id = num;
+                        ChangeNode(searchID(data, lista), data);
+                    }
+                }
+                printf("\n\t   [PRESSIONE QUALQUER TECLA PARA SAIR]\n");
                 getch();
                 continue;
 
             case '2':
                 system("cls");
                 // ALTERAR PELA PALAVRA
-                printf("[ALTERAR COMPROMISSO POR PALAVRA]\n");
-                printf("\n[QUAL PALAVRA DESEJA PROCURAR ?]\n");
+                printf("\n\t   [ALTERAR COMPROMISSO POR PALAVRA]\n");
+                printf("\n  [QUAL PALAVRA DESEJA PROCURAR ?]\n");
                 printf("\n <-> [PALAVRA]: ");
                 scanf("%s", &data.description);
                 setbuf(stdin, NULL);
 
-                pListDesc(lista, data);
-
-                printf("\n[QUAL ID CORRESPONDE AO COMPROMISSO ?]\n");
-                printf("\n[CASO NAO DESEJA REMOVER, DIGITE \"999\"]\n");
-                printf("\n <-> [ID]: ");
-                scanf("%d", &num);
-                setbuf(stdin, NULL);
-
-                if (data.id != 999)
+                if (pListDesc(lista, data) != 0)
                 {
-                    // FUNÇÃO QUE RETORNA DATANODE
-                    data = addPoint();
-                    data.id = num;
-                    ChangeNode(searchID(data, lista), data);
-                }
 
-                printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
+                    printf("\n  [QUAL ID CORRESPONDE AO COMPROMISSO ?]\n");
+                    printf("\n  [CASO NAO DESEJA REMOVER, DIGITE \"999\"]\n");
+                    printf("\n <-> [ID]: ");
+                    scanf("%d", &num);
+                    setbuf(stdin, NULL);
+
+                    if (data.id != 999)
+                    {
+                        system("cls");
+                        // FUNÇÃO QUE RETORNA DATANODE
+                        data = addPoint();
+                        data.id = num;
+                        ChangeNode(searchID(data, lista), data);
+                    }
+                }
+                printf("\n\t   [PRESSIONE QUALQUER TECLA PARA SAIR]\n");
                 getch();
                 continue;
 
@@ -931,8 +967,8 @@ main()
                 continue;
             }
 
-            printf("[ALTERAR COMPROMISSO]\n");
-            printf("\n[DE QUAL DATA %c O COMPORMISSO QUE DESEJA ALTERAR ?]", 144);
+            printf("\n\t   [ALTERAR COMPROMISSO]\n");
+            printf("\n  [DE QUAL DATA %c O COMPORMISSO QUE DESEJA ALTERAR ?]", 144);
             printf("\n <-> [DIA]: ");
             scanf("%d", &data.day);
             setbuf(stdin, NULL); // LIMPA BUFFER DE ENTRADA
@@ -945,7 +981,7 @@ main()
 
             pListDate(lista, data);
 
-            printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
+            printf("\n\t   [PRESSIONE QUALQUER TECLA PARA SAIR]\n");
             getch();
             break;
 
@@ -960,8 +996,10 @@ main()
             */
             char fileName[20];
 
-            printf("[GRAVAR ARQUIVO BACKUP]\n");
-            printf("\n[QUAL NOME DO ARQUIVO QUE DESEJA CRIAR ?]");
+            printf("\t .--------------------------------------.\n");
+            printf("\t |         GRAVAR ARQUIVO BACKUP        |\n");
+            printf("\t '--------------------------------------'\n");
+            printf("\n  [QUAL NOME DO ARQUIVO QUE DESEJA CRIAR ?]");
             printf("\n = [NOME DO ARQUIVO]: ");
             scanf("%s", &fileName);
             strcat(fileName, ".txt");
@@ -980,16 +1018,17 @@ main()
                 >> "fileList();" << Função retorna uma "List"
                 Após returna uma "List" será atribuída a Lista vigente no código
             */
-
-            printf("[LER ARQUIVO BACKUP]\n");
-            printf("\n[QUAL ARQUIVO DESEJA LER ?]");
+            printf("\t .--------------------------------------.\n");
+            printf("\t |          LER ARQUIVO BACKUP          |\n");
+            printf("\t '--------------------------------------'\n");
+            printf("\n  [QUAL ARQUIVO DESEJA LER ?]");
             printf("\n = [NOME DO ARQUIVO]: ");
             scanf("%s", &fileName);
             setbuf(stdin, NULL);
             strcat(fileName, ".txt");
 
             lista = fileList(fileName);
-            printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
+            printf("\n\t   [PRESSIONE QUALQUER TECLA PARA SAIR]\n");
             getch();
             break;
 
@@ -997,14 +1036,11 @@ main()
             setbuf(stdin, NULL);
             system("cls");
             // SAIR DO PROGRAMA
-            printf("\n :( VOCE FINALIZOU O PROGRAMA.\n");
 
             // CRÉDITOS
-            printf("\n[REALIZADOS PELOS ALUNOS]:\n\n");
-            printf("\tCASSIANO HENRIQUE APARECIDO RODRIGUES\n");
-            printf("\tJO%cO PEDRO VIEIRA RODRIGUES\n", 199);
+            end();
 
-            printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
+            printf("\n\t   [PRESSIONE QUALQUER TECLA PARA SAIR]\n");
             getch();
             control = false;
             break;
