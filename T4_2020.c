@@ -506,6 +506,7 @@ bool checkDate(DataNode data)
     mytime = time(NULL);
     struct tm tm = *localtime(&mytime);
 
+    // VERIFICAÇÃO SE O FORMATO É CORRETO
     if (data.month > 12)
     {
         return false;
@@ -573,8 +574,10 @@ bool checkDate(DataNode data)
     }
 
     // VERIFICAR SE A DATA NÃO EXCEDE A DE HOJE
-
-    return true;
+    if ((data.year < tm.tm_year + 1900) || ((data.year == tm.tm_year + 1900) && (data.month < tm.tm_mon + 1)) || ((data.year == tm.tm_year + 1900) && (data.month == tm.tm_mon + 1) && (data.day < tm.tm_mday)))
+    {
+        return false;
+    }
 }
 
 //--- SCREEN
@@ -648,20 +651,29 @@ main()
             // INSERIR COMPROMISSO
             // A CADA INSERÇÃO VAMOS DAR "SORT" ORDENADO PELA DATA
             printf("[ADI%c%cO DE COMPROMISSOS]\n", 128, 199);
-            printf("\n[COMPROMISSO]: ");
-            scanf("%s", &data.description);
+            printf("\n + [COMPROMISSO]: ");
+            gets(data.description);
 
             printf("\n[DATA DE REALIZA%c%cO DE:] \"%s\"", 128, 199, data.description);
-            printf("\n[DIA]: ");
+            printf("\n + [DIA]: ");
             scanf("%d", &data.day);
-            printf("\n[M%cS]: ", 210);
+            printf("\n + [M%cS]: ", 210);
             scanf("%d", &data.month);
-            printf("\n[ANO]: ");
+            printf("\n + [ANO]: ");
             scanf("%d", &data.year);
-            printf("\n[HOR%cRIO DO COMPROMISSO NO DIA %2d/%2d/%4d]", 181, data.day, data.month, data.year);
-            printf("\n[HORA]> ");
+            
+            if (!checkDate(data))
+            {
+                printf("\n[VOC%c ALOCOU UMA DATA ERRADA]", 210);
+                printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
+                getch();
+                break;
+            }
+            
+            printf("\n[HOR%cRIO DO COMPROMISSO NO DIA %d/%d/%d]", 181, data.day, data.month, data.year);
+            printf("\n + [HORA]> ");
             scanf("%d", &data.hours);
-            printf("\n[´MINUTOS]> ");
+            printf("\n + [MINUTOS]> ");
             scanf("%d", &data.minutes);
 
             /* 
@@ -671,23 +683,13 @@ main()
                 >> "checkDate();" retorna "bool" - TRUE or FALSE 
             */
 
-            checkDate(data);
-
-            if (!checkDate(data))
-            {
-                printf("\nVOC%c ALOCOU UMA DATA ERRADA", 210);
-                printf("\n\nPRESSIONE QUALQUER TECLA PARA SAIR");
-                getch();
-                break;
-            }
-
             data.id = lista->size + 1;
             // ID SERÁ DISTINTO PARA CADA COMPROMISSO, NÃO SERÁ UM ITEM A SER ORDENADO
 
             push_front(lista, data);
             insertionSort(data, lista);
 
-            printf("\n\nPRESSIONE QUALQUER TECLA PARA SAIR");
+            printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
             getch();
             break;
 
@@ -709,20 +711,20 @@ main()
                 */
                 printf("[REMOVER COMPROMISSO PELA DATA]\n");
                 printf("\n[EM QUAL DATA %c O COMPROMISSO QUE DESEJA REMOVER ?]", 144);
-                printf("\n[M%cS]: ", 210);
+                printf("\n - [DIA]: ", 210);
                 scanf("%d", &data.day);
                 setbuf(stdin, NULL);
-                printf("\n[M%cS]: ");
+                printf("\n - [M%cS]: ");
                 scanf("%d", &data.month);
                 setbuf(stdin, NULL);
-                printf("\n[ANO]: ");
+                printf("\n - [ANO]: ");
                 scanf("%d", &data.year);
                 setbuf(stdin, NULL);
 
                 pListDate(lista, data);
                 printf("\n[QUAL ID DESEJA REMOVER ?]\n");
                 printf("\n[CASO NAO DESEJA REMOVER, DIGITE \"999\"]\n");
-                printf("\n[ID]: ");
+                printf("\n - [ID]: ");
                 scanf("%d", &data.id);
                 if (data.id != 999)
                 {
@@ -740,8 +742,6 @@ main()
             case '2':
                 // REMOÇÃO POR PALAVRA
 
-                int index;
-
                 /* 
                     USUÁRIO INFORMA PALAVRA QUE DESEJA PROCURAR, 
                     CASO ACHE A PALAVRA, PRINTA A LISTA COM O ID
@@ -754,14 +754,14 @@ main()
 
                 printf("[REMOVER COMPROMISSO POR PALAVRA]\n");
                 printf("\n[QUAL PALAVRA DESEJA PROCURAR ?]\n");
-                printf("\n[PALAVRA]: ");
+                printf("\n - [PALAVRA]: ");
                 scanf("%s", &data.description);
                 setbuf(stdin, NULL);
 
                 pListDesc(lista, data);
                 printf("\n[QUAL ID DESEJA REMOVER ?]\n");
                 printf("\n[CASO NAO DESEJA REMOVER, DIGITE \"999\"]\n");
-                printf("\n[ID]: ");
+                printf("\n - [ID]: ");
                 scanf("%d", &data.id);
                 if (data.id != 999)
                 {
@@ -793,31 +793,19 @@ main()
             */
             printf("[MOSTRAR COMPROMISSOS]\n");
             printf("\n[QUAL DATA DESEJA CONFERIR ?]");
-            printf("\n[DIA]: ");
+            printf("\n %c [DIA]: ", 254);
             scanf("%d", &data.day);
             setbuf(stdin, NULL);
-            printf("\n[M%cS]: ", 210);
+            printf("\n %c [M%cS]: ", 254, 210);
             scanf("%d", &data.month);
             setbuf(stdin, NULL);
-            printf("\n[ANO]: ");
+            printf("\n %c [ANO]: ", 254);
             scanf("%d", &data.year);
             setbuf(stdin, NULL);
 
-            printf("\n");
-
-            //searchDate(data, lista);
-
-            /*if(searchDate(data, lista) == false)
-            {
-                printf("SEM COMPROMISSOS NESSE DIA\n");
-            }*/
-
-            /*Ela está com um problema de as vezes crashar o código, não estou entendendo o que tem
-            de errado, se quiser dar uma olhada, nao eh sempre que da o erro*/
-
             pListDate(lista, data);
 
-            printf("\n\nPRESSIONE QUALQUER TECLA PARA SAIR");
+            printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
             getch();
             break;
 
@@ -832,19 +820,19 @@ main()
             */
             printf("[ALTERAR COMPROMISSO]\n");
             printf("\n[DE QUAL DATA É O COMPORMISSO QUE DESEJA ALTERAR ?]");
-            printf("\n[DIA]: ");
+            printf("\n * [DIA]: ");
             scanf("%d", &data.day);
             setbuf(stdin, NULL); // LIMPA BUFFER DE ENTRADA
-            printf("\n[M%cS]: ", 210);
+            printf("\n * [M%cS]: ", 210);
             scanf("%d", &data.month);
             setbuf(stdin, NULL);
-            printf("\n[ANO]: ");
+            printf("\n * [ANO]: ");
             scanf("%d", &data.year);
             setbuf(stdin, NULL);
 
             // >> "ChangeDate();"
 
-            printf("\n\nPRESSIONE QUALQUER TECLA PARA SAIR");
+            printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
             getch();
             break;
 
@@ -861,7 +849,7 @@ main()
 
             printf("[GRAVAR ARQUIVO BACKUP]\n");
             printf("\n[QUAL NOME DO ARQUIVO QUE DESEJA CRIAR ?]");
-            printf("\n[NOME DO ARQUIVO]: ");
+            printf("\n = [NOME DO ARQUIVO]: ");
             scanf("%s", &fileName);
             strcat(fileName, ".txt");
 
@@ -882,7 +870,7 @@ main()
 
             printf("[LER ARQUIVO BACKUP]\n");
             printf("\n[QUAL ARQUIVO DESEJA LER ?]");
-            printf("\n[NOME DO ARQUIVO]: ");
+            printf("\n = [NOME DO ARQUIVO]: ");
             scanf("%s", &fileName);
             strcat(fileName, ".txt");
 
@@ -893,14 +881,14 @@ main()
             setbuf(stdin, NULL);
             system("cls");
             // SAIR DO PROGRAMA
-            printf("\nVOCE FINALIZOU O PROGRAMA.\n");
+            printf("\n :( VOCE FINALIZOU O PROGRAMA.\n");
 
             // CRÉDITOS
-            printf("[REALIZADOS PELOS ALUNOS]:\n\n");
+            printf("\n[REALIZADOS PELOS ALUNOS]:\n\n");
             printf("\tCASSIANO HENRIQUE APARECIDO RODRIGUES\n");
             printf("\tJO%cO PEDRO VIEIRA RODRIGUES\n", 199);
 
-            printf("\n\nPRESSIONE QUALQUER TECLA PARA SAIR");
+            printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
             getch();
             control = false;
             break;
