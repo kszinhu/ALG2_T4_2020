@@ -576,14 +576,21 @@ bool checkDate(DataNode data)
     // VERIFICAR SE A DATA NÃO EXCEDE A DE HOJE
     if ((data.year < tm.tm_year + 1900) || ((data.year == tm.tm_year + 1900) && (data.month < tm.tm_mon + 1)) || ((data.year == tm.tm_year + 1900) && (data.month == tm.tm_mon + 1) && (data.day < tm.tm_mday)))
     {
+        printf("a");
         return false;
     }
+    return true;
 }
 
 //--- SCREEN
 
 int menu()
 {
+    //DATA DE HOJE
+    time_t mytime;
+    mytime = time(NULL);
+    struct tm tm = *localtime(&mytime);
+
     printf("\t.--------------------------------------.\n");
     printf("\t|                                      |\n");
     printf("\t|           AGENDA DO THIERRY          |\n");
@@ -602,6 +609,11 @@ int menu()
     printf("\t| 0. SAIR DO PROGAMA                   |\n");
     printf("\t'--------------------------------------'\n");
     printf("\n"); // ESPAÇO
+    printf("\t     .----------------------------.\n");
+    printf("\t     |     -- DATA DE HOJE --     |\n");
+    printf("\t     |        %2d/%2d/%4d          |\n", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900);
+    printf("\t     |                            |\n");
+    printf("\t     '----------------------------'\n");
 
     int tecla = getch();
     return tecla;
@@ -654,14 +666,17 @@ main()
             printf("\n + [COMPROMISSO]: ");
             gets(data.description);
 
-            printf("\n[DATA DE REALIZA%c%cO DE:] \"%s\"", 128, 199, data.description);
+            printf("\n[DATA DE REALIZA%c%cO DE: \"%s\"]", 128, 199, data.description);
             printf("\n + [DIA]: ");
             scanf("%d", &data.day);
+            setbuf(stdin, NULL);
             printf("\n + [M%cS]: ", 210);
             scanf("%d", &data.month);
+            setbuf(stdin, NULL);
             printf("\n + [ANO]: ");
             scanf("%d", &data.year);
-            
+            setbuf(stdin, NULL);
+
             if (!checkDate(data))
             {
                 printf("\n[VOC%c ALOCOU UMA DATA ERRADA]", 210);
@@ -669,12 +684,14 @@ main()
                 getch();
                 break;
             }
-            
+
             printf("\n[HOR%cRIO DO COMPROMISSO NO DIA %d/%d/%d]", 181, data.day, data.month, data.year);
             printf("\n + [HORA]> ");
             scanf("%d", &data.hours);
+            setbuf(stdin, NULL);
             printf("\n + [MINUTOS]> ");
             scanf("%d", &data.minutes);
+            setbuf(stdin, NULL);
 
             /* 
                 CONFIRMAÇÃO SE A DATA FOR VÁLIDA:
@@ -763,6 +780,7 @@ main()
                 printf("\n[CASO NAO DESEJA REMOVER, DIGITE \"999\"]\n");
                 printf("\n - [ID]: ");
                 scanf("%d", &data.id);
+                setbuf(stdin, NULL);
                 if (data.id != 999)
                 {
                     /* 
