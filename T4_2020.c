@@ -581,6 +581,49 @@ bool checkDate(DataNode data)
     return true;
 }
 
+DataNode addPoint()
+{
+    DataNode data;
+    bool control = true;
+    do
+    {
+        // FUNÇÃO PARA CADASTRO DE DATANODE's
+        printf("[ADI%c%cO DE COMPROMISSOS]\n", 128, 199);
+        printf("\n + [COMPROMISSO]: ");
+        gets(data.description);
+
+        printf("\n[DATA DE REALIZA%c%cO DE: \"%s\"]", 128, 199, data.description);
+        printf("\n + [DIA]: ");
+        scanf("%d", &data.day);
+        setbuf(stdin, NULL);
+        printf("\n + [M%cS]: ", 210);
+        scanf("%d", &data.month);
+        setbuf(stdin, NULL);
+        printf("\n + [ANO]: ");
+        scanf("%d", &data.year);
+        setbuf(stdin, NULL);
+
+        if (!checkDate(data))
+        {
+            printf("\n[VOC%c ALOCOU UMA DATA ERRADA]", 210);
+            control = false;
+        }
+        else
+        {
+            control = true;
+        }
+
+        printf("\n[HOR%cRIO DO COMPROMISSO NO DIA %d/%d/%d]", 181, data.day, data.month, data.year);
+        printf("\n + [HORA]> ");
+        scanf("%d", &data.hours);
+        setbuf(stdin, NULL);
+        printf("\n + [MINUTOS]> ");
+        scanf("%d", &data.minutes);
+        setbuf(stdin, NULL);
+    } while (!control);
+    return data;
+}
+
 void ChangeNode(Node *pointer, DataNode data)
 {
     pointer->data = data;
@@ -644,11 +687,32 @@ int menuRemove()
     return tecla;
 }
 
+int menuChange()
+{
+    printf("\t.--------------------------------------.\n");
+    printf("\t|                                      |\n");
+    printf("\t|           AGENDA DO THIERRY          |\n");
+    printf("\t|                                      |\n");
+    printf("\t'--------------------------------------'\n");
+    printf("\n"); // ESPAÇO
+    printf("\t.--------------------------------------.\n");
+    printf("\t|                                      |\n");
+    printf("\t| 1. ALTERAR COMPROMISSO PELA DATA     |\n");
+    printf("\t| 2. ALTERAR COMPROMISSO POR PALAVRA   |\n");
+    printf("\t|                                      |\n");
+    printf("\t| 0. SAIR DO MENU                   |\n");
+    printf("\t'--------------------------------------'\n");
+    printf("\n"); // ESPAÇO
+
+    int tecla = getch();
+    return tecla;
+}
+
 main()
 {
     List *lista = createList();
     DataNode data;
-    int dia, mes, ano;
+    int num;
 
     bool control = true, controlaux = true;
 
@@ -666,44 +730,7 @@ main()
             system("cls");
             // INSERIR COMPROMISSO
             // A CADA INSERÇÃO VAMOS DAR "SORT" ORDENADO PELA DATA
-            printf("[ADI%c%cO DE COMPROMISSOS]\n", 128, 199);
-            printf("\n + [COMPROMISSO]: ");
-            gets(data.description);
-
-            printf("\n[DATA DE REALIZA%c%cO DE: \"%s\"]", 128, 199, data.description);
-            printf("\n + [DIA]: ");
-            scanf("%d", &data.day);
-            setbuf(stdin, NULL);
-            printf("\n + [M%cS]: ", 210);
-            scanf("%d", &data.month);
-            setbuf(stdin, NULL);
-            printf("\n + [ANO]: ");
-            scanf("%d", &data.year);
-            setbuf(stdin, NULL);
-
-            if (!checkDate(data))
-            {
-                printf("\n[VOC%c ALOCOU UMA DATA ERRADA]", 210);
-                printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
-                getch();
-                break;
-            }
-
-            printf("\n[HOR%cRIO DO COMPROMISSO NO DIA %d/%d/%d]", 181, data.day, data.month, data.year);
-            printf("\n + [HORA]> ");
-            scanf("%d", &data.hours);
-            setbuf(stdin, NULL);
-            printf("\n + [MINUTOS]> ");
-            scanf("%d", &data.minutes);
-            setbuf(stdin, NULL);
-
-            /* 
-                CONFIRMAÇÃO SE A DATA FOR VÁLIDA:
-                - VERIFICA SE NÃO É PASSADO; (ANTERIOR A DATA ATUAL)
-                - VERIFICA SE NÃO EXISTE DATA EXISTENTE. (30/02/X)
-                >> "checkDate();" retorna "bool" - TRUE or FALSE 
-            */
-
+            data = addPoint();
             data.id = lista->size + 1;
             // ID SERÁ DISTINTO PARA CADA COMPROMISSO, NÃO SERÁ UM ITEM A SER ORDENADO
 
@@ -759,7 +786,7 @@ main()
 
                 printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
                 getch();
-                break;
+                continue;
 
             case '2':
                 // REMOÇÃO POR PALAVRA
@@ -797,7 +824,7 @@ main()
 
                 printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
                 getch();
-                break;
+                continue;
 
             case '0':
                 // CASO DESEJA SAIR DO MENU DE REMOÇÃO
@@ -839,8 +866,8 @@ main()
             switch (menuChange())
             {
             case '1':
+                system("cls");
                 // ALTERAR PELA DATA
-
                 printf("\n[EM QUAL DATA %c O COMPROMISSO QUE DESEJA ALTERAR ?]", 144);
                 printf("\n <-> [DIA]: ");
                 scanf("%d", &data.day);
@@ -855,25 +882,27 @@ main()
 
                 printf("\n[QUAL ID CORRESPONDE AO COMPROMISSO ?]\n");
                 printf("\n[CASO NAO DESEJA REMOVER, DIGITE \"999\"]\n");
-                printf("\n - [ID]: ");
-                scanf("%d", &data.id);
+                printf("\n <-> [ID]: ");
+                scanf("%d", &num);
                 setbuf(stdin, NULL);
 
                 if (data.id != 999)
                 {
                     // FUNÇÃO QUE RETORNA DATANODE
+                    data = addPoint();
                     ChangeNode(searchID(data, lista), data);
                 }
 
                 printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
                 getch();
-                break;
+                continue;
 
             case '2':
+                system("cls");
                 // ALTERAR PELA PALAVRA
                 printf("[ALTERAR COMPROMISSO POR PALAVRA]\n");
                 printf("\n[QUAL PALAVRA DESEJA PROCURAR ?]\n");
-                printf("\n - [PALAVRA]: ");
+                printf("\n <-> [PALAVRA]: ");
                 scanf("%s", &data.description);
                 setbuf(stdin, NULL);
 
@@ -881,19 +910,21 @@ main()
 
                 printf("\n[QUAL ID CORRESPONDE AO COMPROMISSO ?]\n");
                 printf("\n[CASO NAO DESEJA REMOVER, DIGITE \"999\"]\n");
-                printf("\n - [ID]: ");
-                scanf("%d", &data.id);
+                printf("\n <-> [ID]: ");
+                scanf("%d", &num);
                 setbuf(stdin, NULL);
 
                 if (data.id != 999)
                 {
                     // FUNÇÃO QUE RETORNA DATANODE
+                    data = addPoint();
+                    data.id = num;
                     ChangeNode(searchID(data, lista), data);
                 }
 
                 printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
                 getch();
-                break;
+                continue;
 
             case '0':
                 // SAIR DO "menuChange()"
