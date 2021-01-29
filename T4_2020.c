@@ -136,11 +136,11 @@ void pListDate(List *list, DataNode data)
     {
         if (pointer->data.day == data.day && pointer->data.month == data.month && pointer->data.year == data.year)
         {
-            printf(" %c [ID]: %d\n", 254, pointer->data.id);
-            printf("[COMPROMISSO]: %s\n", pointer->data.description);
-            printf("[DATA]: %d/%d/%d\n", pointer->data.day, pointer->data.month, pointer->data.year);
-            printf("[HOR%cRIO]: %d:%d\n", 181, pointer->data.hours, pointer->data.minutes);
-            printf("\n");
+            printf("\n"); // PULAR LINHA
+            printf(" %c [ID]: %d\n", 175, pointer->data.id);
+            printf(" %c [COMPROMISSO]: %s\n", 175, pointer->data.description);
+            printf(" %c [DATA]: %d/%d/%d\n", 175, pointer->data.day, pointer->data.month, pointer->data.year);
+            printf(" %c [HOR%cRIO]: %d:%d\n", 175, 181, pointer->data.hours, pointer->data.minutes);
         }
         pointer = pointer->next;
         count++;
@@ -166,11 +166,11 @@ void pListDesc(List *list, DataNode data)
     {
         if (strstr(pointer->data.description, data.description) != NULL)
         {
-            printf(" %c [ID]: %d\n", 254, pointer->data.id);
-            printf("[COMPROMISSO]: %s\n", pointer->data.description);
-            printf("[DATA]: %d/%d/%d\n", pointer->data.day, pointer->data.month, pointer->data.year);
-            printf("[HOR%cRIO]: %d:%d\n", 181, pointer->data.hours, pointer->data.minutes);
-            printf("\n");
+            printf("\n"); // PULAR LINHA
+            printf(" %c [ID]: %d\n", 175, pointer->data.id);
+            printf(" %c [COMPROMISSO]: %s\n", 175, pointer->data.description);
+            printf(" %c [DATA]: %d/%d/%d\n", 175, pointer->data.day, pointer->data.month, pointer->data.year);
+            printf(" %c [HOR%cRIO]: %d:%d\n", 175, 181, pointer->data.hours, pointer->data.minutes);
             count++;
         }
         pointer = pointer->next;
@@ -479,17 +479,13 @@ List *fileList(char *fileName)
         fscanf(arquivo, "description: %[^\n]s", tempdata.description);
         while (fgetc(arquivo) != '\n')
             ;
-        printf("description: %s\n", tempdata.description);
         fscanf(arquivo, "date: %d/%d/%d", &tempdata.day, &tempdata.month, &tempdata.year);
         while (fgetc(arquivo) != '\n')
             ;
-        printf("date: %d/%d/%d\n", tempdata.day, tempdata.month, tempdata.year);
         fscanf(arquivo, "schedule: %d:%d", &tempdata.hours, &tempdata.minutes);
         while (fgetc(arquivo) != '\n')
             ;
-        printf("schedule: %d:%d\n", tempdata.hours, tempdata.minutes);
         fscanf(arquivo, "id: %d\n", &tempdata.id);
-        printf("id: %d\n", tempdata.id);
 
         // CONVERTENDO EM LISTA
         // OBRIGADO XILSU, DAVIZERA E MODSCLEO3+1
@@ -649,7 +645,7 @@ main()
     DataNode data;
     int dia, mes, ano;
 
-    bool control = true;
+    bool control = true, controlaux = true;
 
     system("cls");
 
@@ -719,7 +715,6 @@ main()
             // REMOVER COMPROMISSO
             switch (menuRemove())
             {
-                system("cls");
             case '1':
                 system("cls");
                 // REMOÇÃO POR DATA
@@ -800,8 +795,8 @@ main()
                 break;
 
             case '0':
-                // SAIR DO "menuRemove()"
-                break;
+                // CASO DESEJA SAIR DO MENU DE REMOÇÃO
+                continue;
             }
 
         case '3':
@@ -827,7 +822,6 @@ main()
             setbuf(stdin, NULL);
 
             pListDate(lista, data);
-            /* printList(lista); */
 
             printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
             getch();
@@ -843,14 +837,14 @@ main()
                 >> "ChangeDate();" << Função "void"
             */
             printf("[ALTERAR COMPROMISSO]\n");
-            printf("\n[DE QUAL DATA É O COMPORMISSO QUE DESEJA ALTERAR ?]");
-            printf("\n * [DIA]: ");
+            printf("\n[DE QUAL DATA %c O COMPORMISSO QUE DESEJA ALTERAR ?]", 144);
+            printf("\n <-> [DIA]: ");
             scanf("%d", &data.day);
             setbuf(stdin, NULL); // LIMPA BUFFER DE ENTRADA
-            printf("\n * [M%cS]: ", 210);
+            printf("\n <-> [M%cS]: ", 210);
             scanf("%d", &data.month);
             setbuf(stdin, NULL);
-            printf("\n * [ANO]: ");
+            printf("\n <-> [ANO]: ");
             scanf("%d", &data.year);
             setbuf(stdin, NULL);
 
