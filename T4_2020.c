@@ -131,11 +131,9 @@ void pListDate(List *list, DataNode data)
         return;
     }
 
-    Node *pointer = list->head;
-
+    Node *pointer = atPos(list, 0);
     while (pointer != NULL)
     {
-
         if (pointer->data.day == data.day && pointer->data.month == data.month && pointer->data.year == data.year)
         {
             printf(" %c [ID]: %d\n", 254, pointer->data.id);
@@ -143,9 +141,9 @@ void pListDate(List *list, DataNode data)
             printf("[DATA]: %d/%d/%d\n", pointer->data.day, pointer->data.month, pointer->data.year);
             printf("[HOR%cRIO]: %d:%d\n", 181, pointer->data.hours, pointer->data.minutes);
             printf("\n");
-            pointer = pointer->next;
-            count++;
         }
+        pointer = pointer->next;
+        count++;
     }
 
     if (count == 0)
@@ -448,11 +446,11 @@ void filePrint(List *list, char *fileName)
     }
 }
 
-List fileList(char *fileName)
+List *fileList(char *fileName)
 {
     FILE *arquivo;
     DataNode tempdata;
-    List *list;
+    List *list = createList();
     int i;
 
     arquivo = fopen(fileName, "r");
@@ -466,6 +464,7 @@ List fileList(char *fileName)
         description: Médico
         date: 14/3/2002
         schedule: 00:00
+        id: 3
     */
 
     for (i = 0; i < 4; i++) // PULAR AS 4 LINHAS DE HEADER
@@ -477,26 +476,30 @@ List fileList(char *fileName)
     while (!feof(arquivo))
     {
         // LEITURA DE LINHA
-        fscanf(arquivo, "description: %s", tempdata.description);
+        fscanf(arquivo, "description: %[^\n]s", tempdata.description);
         while (fgetc(arquivo) != '\n')
             ;
+        printf("description: %s\n", tempdata.description);
         fscanf(arquivo, "date: %d/%d/%d", &tempdata.day, &tempdata.month, &tempdata.year);
         while (fgetc(arquivo) != '\n')
             ;
+        printf("date: %d/%d/%d\n", tempdata.day, tempdata.month, tempdata.year);
         fscanf(arquivo, "schedule: %d:%d", &tempdata.hours, &tempdata.minutes);
         while (fgetc(arquivo) != '\n')
             ;
-        fscanf(arquivo, "id: %d", &tempdata.id);
-        while (fgetc(arquivo) != '\n')
-            ;
+        printf("schedule: %d:%d\n", tempdata.hours, tempdata.minutes);
+        fscanf(arquivo, "id: %d\n", &tempdata.id);
+        printf("id: %d\n", tempdata.id);
+
         // CONVERTENDO EM LISTA
+        // OBRIGADO XILSU, DAVIZERA E MODSCLEO3+1
         push_front(list, tempdata);
     }
     // COMO JÁ ESTÁ EM SORT A LISTA NÃO NECESSITA SER ORDENADA NOVAMENTE
     // ACABAMOS DE LER O ARQUIVO, PORTANTO FECHAMOS O ARQUIVO
     fclose(arquivo);
 
-    return *list;
+    return list;
 }
 
 bool checkDate(DataNode data)
@@ -712,11 +715,13 @@ main()
 
         case '2':
             setbuf(stdin, NULL);
+            system("cls");
             // REMOVER COMPROMISSO
             switch (menuRemove())
             {
                 system("cls");
             case '1':
+                system("cls");
                 // REMOÇÃO POR DATA
 
                 /* 
@@ -728,10 +733,10 @@ main()
                 */
                 printf("[REMOVER COMPROMISSO PELA DATA]\n");
                 printf("\n[EM QUAL DATA %c O COMPROMISSO QUE DESEJA REMOVER ?]", 144);
-                printf("\n - [DIA]: ", 210);
+                printf("\n - [DIA]: ");
                 scanf("%d", &data.day);
                 setbuf(stdin, NULL);
-                printf("\n - [M%cS]: ");
+                printf("\n - [M%cS]: ", 210);
                 scanf("%d", &data.month);
                 setbuf(stdin, NULL);
                 printf("\n - [ANO]: ");
@@ -740,7 +745,7 @@ main()
 
                 pListDate(lista, data);
                 printf("\n[QUAL ID DESEJA REMOVER ?]\n");
-                printf("\n[CASO NAO DESEJA REMOVER, DIGITE \"999\"]\n");
+                printf("\n[CASO N%cO DESEJA REMOVER, DIGITE \"999\"]\n", 199);
                 printf("\n - [ID]: ");
                 scanf("%d", &data.id);
                 if (data.id != 999)
@@ -822,6 +827,7 @@ main()
             setbuf(stdin, NULL);
 
             pListDate(lista, data);
+            /* printList(lista); */
 
             printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
             getch();
@@ -890,9 +896,12 @@ main()
             printf("\n[QUAL ARQUIVO DESEJA LER ?]");
             printf("\n = [NOME DO ARQUIVO]: ");
             scanf("%s", &fileName);
+            setbuf(stdin, NULL);
             strcat(fileName, ".txt");
 
-            *lista = fileList(fileName);
+            lista = fileList(fileName);
+            printf("\n[PRESSIONE QUALQUER TECLA PARA SAIR]\n");
+            getch();
             break;
 
         case '0':
