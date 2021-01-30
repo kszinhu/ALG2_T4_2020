@@ -871,7 +871,7 @@ main()
                 >> "searchDate();" << Função "void"
             */
             printf("\n\t   [MOSTRAR COMPROMISSOS]\n");
-            printf("\n  [QUAL DATA DESEJA CONFERIR ?]");
+            printf("\n  [QUAL DATA DESEJA CONFERIR ?]\n");
             printf(" %c [DIA]: ", 254);
             scanf("%d", &data.day);
             setbuf(stdin, NULL);
@@ -882,10 +882,8 @@ main()
             scanf("%d", &data.year);
             setbuf(stdin, NULL);
 
-            if (pListDate(lista, data) == 0)
-            {
-                printf("\n  [SEM COMPROMISSOS NA DATA]\n");
-            }
+            pListDate(lista, data);
+
             printf("\n\t   [PRESSIONE QUALQUER TECLA PARA SAIR]\n");
             getch();
             break;
