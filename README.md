@@ -66,4 +66,4 @@ Faça um programa para gerenciar uma **agenda de compromissos** usando uma estru
 
 - **Cassiano Henrique Aparecido Rodrigues** - [Linkedin](https://www.linkedin.com/in/cassiano-rodrigues-28bb8b16a/), [Github](https://www.github.com/kszinhu)
 
-- **João Pedro Vieira Rodrigues** - [Linkedin](https://www.linkedin.com/in/modscleo4/), [Github](https://www.github.com/jotinha08)58,,,
+- **João Pedro Vieira Rodrigues** - [Linkedin](https://www.linkedin.com/in/modscleo4/), [Github](https://www.github.com/jotinha08)
